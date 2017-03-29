@@ -2,36 +2,66 @@ package com.dromedicas.jaxrs.service;
 
 import java.util.List;
 
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import com.dromedicas.dao.HibernateSessionFactory;
 import com.dromedicas.dao.SucursalesHome;
 import com.dromedicas.dto.Sucursales;
+import com.dromedicas.dto.Ventadiariaglobal;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
-public class ClienteVentasAlInstante {
-
-	public static void main(String args[]) {
-		//Obtiene todas las Sucursales
-		
-		//Itera Todas las sucursales
-		
-				//Revisa si la sucursal no es 24 horas
-				
-				//Si no es 24 horas revisa si la hora actual esta entre la hora de apertura y +1 sobre
-				//la hora cierre
-				
-		
-			//Consume el servicio web de Ventas al instante para cada sucursal
-			
-			//Crea un objeto Ventadiariaglobal con los nuevos valores
-			
-			//Busca si existen valores para el dia operativo actual y los elimina
-			
-			//Perisite el nuevo objeto Ventadiariaglobal
+public class ClienteVentasAlInstante implements Job {
 	
-		//finalizada la iteracion de la sucursales cierra la conexion  a la base de datos
+	@Override
+	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		// Obtiene todas las Sucursales		
+		SucursalesHome sucursalesHome = new SucursalesHome();//Objeto DAO
+		List<Sucursales> sucursalList= sucursalesHome.findAll();
+
+		//Servicio Ventas al instante
+		String servicio = "wsjson/ventainstante"; 
+
+		// Itera Todas las sucursales
+		for( Sucursales sucursal : sucursalList ){	
+			
+			// Revisa si la sucursal  es 24 horas
+			if( sucursal.getEs24horas().trim() == "true" ){				
+				//consume servicio
+				try {
+					List<Ventadiariaglobal> ventasList = 
+										this.getWSVentaAlInstante(sucursal.getRutaweb() + servicio);
+					if(ventasList != null ){
+						// Busca si existen valores para el dia operativo actual, y los elimina
+
+						// Perisite el(los) nuevo(s) objeto(s) Ventadiariaglobal
+					}				
+				} catch (Exception e) {
+					System.out.println("Error en la conexion para la sucursal:  "  + 
+								sucursal.getDescripcion() + " | " + sucursal.getRutaweb() + servicio);
+					e.printStackTrace();
+				}
+				
+			}else{
+				// revisa si la hora actual esta entre la hora de  apertura y +1 hora sobre cierre
+				//consume servicio 
+			}
+		}
+
+			// Crea un objeto Ventadiariaglobal con los nuevos valores
+
+			// Busca si existen valores para el dia operativo actual y los elimina
+
+			// Perisite el nuevo objeto Ventadiariaglobal
+
+		// finalizada la iteracion de la sucursales cierra la conexion a la base de datos
 		
-		
+	}
+
+	
+	public static void main(String args[]) {
 		
 		try {
 			
@@ -50,12 +80,13 @@ public class ClienteVentasAlInstante {
 									
 					List<VentaAlInstanteDetalle> detalle = response.getMessage().getData();
 					
+					
 					System.out.println("Sucursal: " + sucursal.getDescripcion() + " | " + sucursal.getRutaweb() + servicio);
 					System.out.println("Dia Operativo: " + detalle.get(0).getDiaoperativo());	
-					System.out.printf( "%s\t\t\t%s\t%s\n", "Vendedor", "V. General", "V. Bonificado" );
+					
 					for( VentaAlInstanteDetalle e : detalle){
 						
-						System.out.printf( "%s\t\t\t%s\t%s\n", e.getVendedor().trim(), e.getVtageneral(),  e.getVtaespecial() );
+						System.out.println(  e.getVendedor().trim() + " - " + e.getVtageneral() +" - "+  e.getVtaespecial() );
 					}
 					
 				} catch (Exception e) {
@@ -98,5 +129,24 @@ public class ClienteVentasAlInstante {
 		}
 
 	}
+
+	
+	/**
+	 * Retorna una List de objetos  <code>Ventadiariaglobal</code> correspondientes
+	 * a las ventas de una sucursal por vendedor.
+	 * @param url
+	 * @return
+	 */
+	private List<Ventadiariaglobal> getWSVentaAlInstante(String url){
+		
+		Client client = Client.create();
+		WebResource webResource = client.resource(url);				
+		VentaAlInstanteWrap response = webResource.accept("application/json").get(VentaAlInstanteWrap.class);	
+						
+		List<VentaAlInstanteDetalle> detalle = response.getMessage().getData();
+		return null;
+	}
+
+	
 
 }
