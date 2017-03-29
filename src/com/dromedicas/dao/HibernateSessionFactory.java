@@ -116,5 +116,9 @@ public class HibernateSessionFactory {
 	public static Configuration getConfiguration() {
 		return configuration;
 	}
+	
+	public static void stopSessionFactory(){
+		getSessionFactory().close();
+	}
 
 }
