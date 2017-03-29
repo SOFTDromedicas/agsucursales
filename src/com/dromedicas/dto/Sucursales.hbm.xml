@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 28/03/2017 05:43:09 PM by Hibernate Tools 5.1.2.Final -->
+<hibernate-mapping>
+    <class name="com.dromedicas.dto.Sucursales" table="sucursales" catalog="droposservidordb">
+        <id name="sucursalid" type="java.lang.Integer">
+            <column name="sucursalid" />
+            <generator class="identity" />
+        </id>
+        <property name="version" type="string">
+            <column name="version" length="10" not-null="true"  />
+        </property>
+        <property name="codigo" type="string">
+            <column name="codigo" length="3" not-null="true" unique="true" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="30" not-null="true" />
+        </property>
+        <property name="zona" type="string">
+            <column name="zona" length="3" not-null="true" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="60" not-null="true" />
+        </property>
+        <property name="ciudadcodigo" type="java.lang.Long">
+            <column name="ciudadcodigo" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="30" not-null="true" />
+        </property>
+        <property name="telefono2" type="string">
+            <column name="telefono2" length="10" />
+        </property>
+        <property name="celular" type="string">
+            <column name="celular" length="20" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="70" not-null="true" />
+        </property>
+        <property name="totventas" type="java.lang.Double">
+            <column name="totventas" precision="22" scale="0" />
+        </property>
+        <property name="diaoperativo" type="string">
+            <column name="diaoperativo" length="12" not-null="true" />
+        </property>
+        <property name="ultcierre" type="string">
+            <column name="ultcierre" length="20" not-null="true" />
+        </property>
+        <property name="ultrecepcion" type="string">
+            <column name="ultrecepcion" length="25" />
+        </property>
+        <property name="utlrecepauto" type="string">
+            <column name="utlrecepauto" length="35" />
+        </property>
+        <property name="ultrecekardex" type="timestamp">
+            <column name="ultrecekardex" length="0" not-null="true" />
+        </property>
+        <property name="activa" type="string">
+            <column name="activa" length="7" not-null="true" />
+        </property>
+        <property name="esdrogueria" type="string">
+            <column name="esdrogueria" length="8" not-null="true" />
+        </property>
+        <property name="rutaweb" type="string">
+            <column name="rutaweb" length="60" />
+        </property>
+        <property name="lispre1" type="string">
+            <column name="lispre1" length="8" />
+        </property>
+        <property name="lispre2" type="string">
+            <column name="lispre2" length="8" />
+        </property>
+        <property name="lispre3" type="string">
+            <column name="lispre3" length="8" />
+        </property>
+        <property name="lispre4" type="string">
+            <column name="lispre4" length="8" />
+        </property>
+        <property name="lispre5" type="string">
+            <column name="lispre5" length="8" />
+        </property>
+        <property name="dctodesde" type="java.util.Date">
+            <column name="dctodesde" length="0" not-null="true" />
+        </property>
+        <property name="dctohasta" type="java.util.Date">
+            <column name="dctohasta" length="0" not-null="true" />
+        </property>
+        <property name="porcen" type="double">
+            <column name="porcen" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="horacierre" type="string">
+            <column name="horacierre" length="8" not-null="true" />
+        </property>
+        <property name="direccionip" type="string">
+            <column name="direccionip" length="30" />
+        </property>
+        <property name="horaperturagen" type="time">
+            <column name="horaperturagen" length="0" />
+        </property>
+        <property name="horacierregen" type="time">
+            <column name="horacierregen" length="0" />
+        </property>
+        <property name="horaperturaes" type="time">
+            <column name="horaperturaes" length="0" />
+        </property>
+        <property name="horacierrees" type="time">
+            <column name="horacierrees" length="0" />
+        </property>
+        <property name="es24horas" type="string">
+            <column name="es24horas" length="8" />
+        </property>
+        <property name="latitud" type="string">
+            <column name="latitud" length="30" />
+        </property>
+        <property name="longitud" type="string">
+            <column name="longitud" length="30" />
+        </property>
+        <property name="direccion2" type="string">
+            <column name="direccion2" length="65">
+                <comment>Esta es la direccion referencial usada en las aplicaciones mobiles y pagina web</comment>
+            </column>
+        </property>
+        <property name="pervenregu" type="string">
+            <column name="pervenregu" length="8" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 28/03/2017 05:43:09 PM by Hibernate Tools 5.1.2.Final -->
+<hibernate-mapping>
+    <class name="com.dromedicas.dto.Existencias" table="existencias" catalog="droposservidordb" optimistic-lock="version">
+        <composite-id name="id" class="com.dromedicas.dto.ExistenciasId">
+            <key-property name="bodegaid" type="int">
+                <column name="bodegaid" />
+            </key-property>
+            <key-property name="productoid" type="long">
+                <column name="productoid" />
+            </key-property>
+        </composite-id>
+        <property name="cantidad" type="double">
+            <column name="cantidad" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="ultcambio" type="timestamp">
+            <column name="ultcambio" length="0" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
