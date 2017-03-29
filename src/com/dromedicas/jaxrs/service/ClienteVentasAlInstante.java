@@ -1,5 +1,7 @@
 package com.dromedicas.jaxrs.service;
 
+import java.util.List;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -18,6 +20,11 @@ public class ClienteVentasAlInstante {
 			VentaAlInstanteWrap response = webResource.accept("application/json").get(VentaAlInstanteWrap.class);
 
 			System.out.println(response.getMessage().getCode());
+			
+			List<VentaAlInstanteDetalle> detalle = response.getMessage().getData();
+			for( VentaAlInstanteDetalle e : detalle){
+				System.out.println(e.getVendedor());
+			}
 
 			// //create ObjectMapper instance
 			// ObjectMapper objectMapper = new ObjectMapper();
