@@ -12,7 +12,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
  * current thread of execution.  Follows the Thread Local Session
  * pattern, see {@link http://hibernate.org/42.html }.
  */
-public class HibernateSessionFactory {
+public  class  HibernateSessionFactory {
 
     /** 
      * Location of hibernate.cfg.xml file.
@@ -118,7 +118,16 @@ public class HibernateSessionFactory {
 	}
 	
 	public static void stopSessionFactory(){
-		getSessionFactory().close();
+		//getSessionFactory().close();
+		getSession().close();
+		
 	}
+	
+	public static void openSessionFactory(){
+		//getSessionFactory().getCurrentSession();
+	}
+	
+	
+	
 
 }
