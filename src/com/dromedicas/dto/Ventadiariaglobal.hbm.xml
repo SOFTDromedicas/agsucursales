@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 28/03/2017 05:43:09 PM by Hibernate Tools 5.1.2.Final -->
 <hibernate-mapping>
-    <class name="com.dromedicas.dto.Ventadiariaglobal" table="ventadiariaglobal" catalog="droposservidordb" optimistic-lock="version">
+    <class name="com.dromedicas.dto.Ventadiariaglobal" table="ventadiariaglobal2" catalog="droposservidordb" optimistic-lock="version">
         <id name="id" type="java.lang.Long">
             <column name="id" />
             <generator class="identity" />

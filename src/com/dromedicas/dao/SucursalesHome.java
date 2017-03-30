@@ -132,17 +132,7 @@ public class SucursalesHome extends BaseHibernateDAO {
 		}
 	}
 	
-	public List diaOperativoActual( String codSucursal) {
-		log.debug("finding all Sucursales instances");
-		try {			
-			String queryString = "from Sucursales s where s.esdrogueria = 'CHECKED' order by s.codigo asc";
-			Query queryObject = this.sessionFactory.createQuery(queryString);
-			return queryObject.list();
-		} catch (RuntimeException re) {
-			log.error("find all failed", re);
-			throw re;
-		}
-	}
+	
 		
 	
 }

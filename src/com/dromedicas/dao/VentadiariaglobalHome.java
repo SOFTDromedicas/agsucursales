@@ -5,10 +5,12 @@ import java.util.List;
 import javax.naming.InitialContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 
 import com.dromedicas.dto.Ventadiariaglobal;
@@ -130,5 +132,57 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 			log.error("find all failed", re);
 			throw re;
 		}
+	}
+	
+	public Ventadiariaglobal getVentasDiaActual( String codSucursal , String diaActual, String vendedor) {
+		log.debug("finding all Sucursales instances");
+		try {			
+			String queryString = "from Ventadiariaglobal v where v.codsucursal = '"+ codSucursal + 
+								 "' and v.diaoperativo = '"+ diaActual +"' and v.vendedor ='"+ vendedor + "'";
+			Query queryObject = this.sessionFactory.createQuery(queryString);
+			return (Ventadiariaglobal) queryObject.uniqueResult();
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
+		}
+	}
+	
+	public boolean guardarVentaDiaraGlobal(Ventadiariaglobal instance) {		
+		Session session = null;
+		Transaction txt = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();
+			this.persist(instance);
+			txt.commit();
+		} catch (HibernateException e) {
+			txt.rollback();
+			throw e;
+		}
+		finally{
+			//session.close();
+		}
+
+		return true;// si nada fallo, regresamos verdadero
+	}
+	
+	public boolean eliminarVentaDiaraGlobal(Ventadiariaglobal instance) {
+		Session session = null;
+		Transaction txt = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();
+			
+			//Eliminamos el alumno
+			this.delete(instance);
+			txt.commit();
+		} catch (HibernateException e) {
+			txt.rollback();
+			throw e;
+		} finally {
+			//session.close();
+		}
+
+		return true;// si nada falla regresamos verdadero
 	}
 }
