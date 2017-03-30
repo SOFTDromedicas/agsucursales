@@ -35,22 +35,21 @@ public class ClienteVentasAlInstante implements Job {
 		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
 		log.info("Obteniendo Sucursales");
 		List<Sucursales> sucursalList = sucursalesHome.findAll();
-		System.out.println("Total Sucursales: " + sucursalList.size());
+		log.info("Total Sucursales: " + sucursalList.size());
 		
 		// Itera Todas las sucursales
 		for (Sucursales sucursal : sucursalList) {
-			System.out.println(sucursal.getEs24horas().trim().equals("true"));
 			// Revisa si la sucursal es 24 horas
 			if (sucursal.getEs24horas().trim().equals("true")) {
 				try {
-					System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
+					log.info("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
 					// consume servicio
 					List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
-					System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
+					log.info("Tamanio Actual de elementos: " + ventasActualList.size());
 					if (ventasActualList != null) {
 						// Itera ventasActualList
 						// Busca si existen valores para el dia operativo actual, y los elimina
-						System.out.println("Buscando valores para el dia operativo actual");
+						log.info("Buscando valores para el dia operativo actual");
 						for (Ventadiariaglobal e : ventasActualList) {
 							Ventadiariaglobal ventaAnterior = (Ventadiariaglobal) ventaDiaraHome
 									.getVentasDiaActual(e.getCodsucursal(), e.getDiaoperativo(), e.getVendedor());
@@ -62,35 +61,31 @@ public class ClienteVentasAlInstante implements Job {
 							}
 							// Perisite el(los) nuevo(s) objeto(s)
 							// Ventadiariaglobal
-							System.out.println("Grabando el nuevo Valor valor actual");
+							log.info("Grabando el nuevo Valor valor actual");
 							ventaDiaraHome.guardarVentaDiaraGlobal(e);
 						}
 					}
 
 				} catch (Exception e) {
-					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
+					log.error("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
 				}
 
 			} else {
-				// revisa si la hora actual esta entre la hora de apertura y +1
 				try {
-					boolean abierto = estaAbierta(sucursal);
-					if (abierto) {
-						System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
+					// revisa si la hora actual esta entre la hora de apertura y cierre +1
+					if (estaAbierta(sucursal)) {
+						log.info("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
 						// consume servicio
 						List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
-						System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
+						log.info("Sucursales Totales: " + ventasActualList.size());
 						if (ventasActualList != null) {
-							// Itera ventasActualList
-							// Busca si existen valores para el dia operativo
-							// actual, y los elimina
-							System.out.println("Buscando valores para el dia operativo actual");
+							// Busca si existen valores para el dia operativo actual, y los elimina
+							log.info("Buscando valores para el dia operativo actual");
 							for (Ventadiariaglobal e : ventasActualList) {
 								Ventadiariaglobal ventaAnterior = (Ventadiariaglobal) ventaDiaraHome
 										.getVentasDiaActual(e.getCodsucursal(), e.getDiaoperativo(), e.getVendedor());
-
 								// elimina los registros actuales
 								if (ventaAnterior != null) {
 									log.info("Elimina valor actual");
@@ -98,13 +93,13 @@ public class ClienteVentasAlInstante implements Job {
 								}
 								// Perisite el(los) nuevo(s) objeto(s)
 								// Ventadiariaglobal
-								System.out.println("Grabando el nuevo Valor valor actual");
+								log.info("Grabando el nuevo Valor valor actual");
 								ventaDiaraHome.guardarVentaDiaraGlobal(e);
 							}
 						}
 					}
 				} catch (ParseException e) {
-					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
+					log.error("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
 				}
