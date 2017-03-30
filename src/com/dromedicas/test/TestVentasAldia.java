@@ -26,8 +26,8 @@ import com.sun.jersey.api.client.WebResource;
 public class TestVentasAldia {
 	static Logger log = Logger.getLogger(TestVentasAldia.class);
 
-	static // Servicio Ventas al instante
-	String servicio = "wsjson/ventainstante";
+	// Servicio Ventas al instante
+	static String servicio = "wsjson/ventainstante";
 
 	public static void main(String args[]) {
 		// Obtiene todas las Sucursales
