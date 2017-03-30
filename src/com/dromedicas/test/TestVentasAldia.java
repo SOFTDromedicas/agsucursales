@@ -73,7 +73,10 @@ public class TestVentasAldia {
 				} catch (Exception e) {
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
-					e.printStackTrace();
+					System.out.println(e.getMessage());
+					//com.sun.jersey.api.client.ClientHandlerException
+					//java.net.ConnectException: Connection timed out: connect
+					
 				}
 				
 			} else {
@@ -109,7 +112,7 @@ public class TestVentasAldia {
 				} catch (ParseException e) {					
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}	
 				
 			}//fin del else ppal

@@ -22,112 +22,112 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
 public class ClienteVentasAlInstante implements Job {
-	
+
 	Logger log = Logger.getLogger(ClienteVentasAlInstante.class);
 	// Servicio Ventas al instante
 	private String servicio = "wsjson/ventainstante";
 
-	
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		// Obtiene todas las Sucursales
-		//HibernateSessionFactory.openSessionFactory();
-				SucursalesHome sucursalesHome = new SucursalesHome();// Objeto DAO para
-																		// sucursales
-				VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
-				log.info("Obteniendo Sucursales");
-				List<Sucursales> sucursalList = sucursalesHome.findAll();
-				System.out.println("Total Sucursales: " + sucursalList.size());
-				Logger log = Logger.getLogger(ClienteVentasAlInstante.class);
+		// HibernateSessionFactory.openSessionFactory();
+		SucursalesHome sucursalesHome = new SucursalesHome();// Objeto DAO para
+																// sucursales
+		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
+		log.info("Obteniendo Sucursales");
+		List<Sucursales> sucursalList = sucursalesHome.findAll();
+		System.out.println("Total Sucursales: " + sucursalList.size());
+		Logger log = Logger.getLogger(ClienteVentasAlInstante.class);
 
-				// Itera Todas las sucursales
-				for (Sucursales sucursal : sucursalList) {
-					System.out.println(sucursal.getEs24horas().trim().equals("true"));
-					// Revisa si la sucursal es 24 horas
-					if (sucursal.getEs24horas().trim().equals("true")) {
-						try {
-							System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
-							// consume servicio
-							List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
-							System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
-							if (ventasActualList != null) {
-								// Itera ventasActualList
-								// Busca si existen valores para el dia operativo
-								// actual, y los elimina
-								System.out.println("Buscando valores para el dia operativo actual");
-								for (Ventadiariaglobal e : ventasActualList) {
-									 Ventadiariaglobal ventaAnterior = (Ventadiariaglobal) ventaDiaraHome
-											.getVentasDiaActual(e.getCodsucursal(), e.getDiaoperativo(), e.getVendedor());
-											
-									// elimina los registros actuales
-									if (ventaAnterior != null){
-										log.info("Elimina valor actual");
-										ventaDiaraHome.eliminarVentaDiaraGlobal(ventaAnterior);
-									}
-									// Perisite el(los) nuevo(s) objeto(s)
-									// Ventadiariaglobal
-									System.out.println("Grabando el nuevo Valor valor actual");
-									ventaDiaraHome.guardarVentaDiaraGlobal(e);
-								}
+		// Itera Todas las sucursales
+		for (Sucursales sucursal : sucursalList) {
+			System.out.println(sucursal.getEs24horas().trim().equals("true"));
+			// Revisa si la sucursal es 24 horas
+			if (sucursal.getEs24horas().trim().equals("true")) {
+				try {
+					System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
+					// consume servicio
+					List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
+					System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
+					if (ventasActualList != null) {
+						// Itera ventasActualList
+						// Busca si existen valores para el dia operativo
+						// actual, y los elimina
+						System.out.println("Buscando valores para el dia operativo actual");
+						for (Ventadiariaglobal e : ventasActualList) {
+							Ventadiariaglobal ventaAnterior = (Ventadiariaglobal) ventaDiaraHome
+									.getVentasDiaActual(e.getCodsucursal(), e.getDiaoperativo(), e.getVendedor());
+
+							// elimina los registros actuales
+							if (ventaAnterior != null) {
+								log.info("Elimina valor actual");
+								ventaDiaraHome.eliminarVentaDiaraGlobal(ventaAnterior);
 							}
-
-						} catch (Exception e) {
-							System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
-									+ sucursal.getRutaweb() + servicio);
-							e.printStackTrace();
+							// Perisite el(los) nuevo(s) objeto(s)
+							// Ventadiariaglobal
+							System.out.println("Grabando el nuevo Valor valor actual");
+							ventaDiaraHome.guardarVentaDiaraGlobal(e);
 						}
-						
-					} else {
-						// revisa si la hora actual esta entre la hora de apertura y +1
-						try {
-							boolean abierto = estaAbierta(sucursal);
-							if(abierto){
-								System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
-								// consume servicio
-								List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
-								System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
-								if (ventasActualList != null) {
-									// Itera ventasActualList
-									// Busca si existen valores para el dia operativo
-									// actual, y los elimina
-									System.out.println("Buscando valores para el dia operativo actual");
-									for (Ventadiariaglobal e : ventasActualList) {
-										 Ventadiariaglobal ventaAnterior = (Ventadiariaglobal) ventaDiaraHome
-												.getVentasDiaActual(e.getCodsucursal(), e.getDiaoperativo(), e.getVendedor());
-												
-										// elimina los registros actuales
-										if (ventaAnterior != null){
-											log.info("Elimina valor actual");
-											ventaDiaraHome.eliminarVentaDiaraGlobal(ventaAnterior);
-										}
-										// Perisite el(los) nuevo(s) objeto(s)
-										// Ventadiariaglobal
-										System.out.println("Grabando el nuevo Valor valor actual");
-										ventaDiaraHome.guardarVentaDiaraGlobal(e);
-									}
-								}
-							}
-						} catch (ParseException e) {					
-							System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
-									+ sucursal.getRutaweb() + servicio);
-							e.printStackTrace();
-						}	
-						
-					}//fin del else ppal
-					
-					System.out.println();
-				} // fin del for que itera las sucursales
+					}
 
-				
-				// finalizada la iteracion de la sucursales cierra la conexion a la base de datos
-				HibernateSessionFactory.stopSessionFactory();
-				sucursalesHome = null;
-				ventaDiaraHome = null;
+				} catch (Exception e) {
+					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
+							+ sucursal.getRutaweb() + servicio);
+					e.printStackTrace();
+				}
+
+			} else {
+				// revisa si la hora actual esta entre la hora de apertura y +1
+				try {
+					boolean abierto = estaAbierta(sucursal);
+					if (abierto) {
+						System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
+						// consume servicio
+						List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
+						System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
+						if (ventasActualList != null) {
+							// Itera ventasActualList
+							// Busca si existen valores para el dia operativo
+							// actual, y los elimina
+							System.out.println("Buscando valores para el dia operativo actual");
+							for (Ventadiariaglobal e : ventasActualList) {
+								Ventadiariaglobal ventaAnterior = (Ventadiariaglobal) ventaDiaraHome
+										.getVentasDiaActual(e.getCodsucursal(), e.getDiaoperativo(), e.getVendedor());
+
+								// elimina los registros actuales
+								if (ventaAnterior != null) {
+									log.info("Elimina valor actual");
+									ventaDiaraHome.eliminarVentaDiaraGlobal(ventaAnterior);
+								}
+								// Perisite el(los) nuevo(s) objeto(s)
+								// Ventadiariaglobal
+								System.out.println("Grabando el nuevo Valor valor actual");
+								ventaDiaraHome.guardarVentaDiaraGlobal(e);
+							}
+						}
+					}
+				} catch (ParseException e) {
+					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
+							+ sucursal.getRutaweb() + servicio);
+					e.printStackTrace();
+				}
+
+			} // fin del else ppal
+
+			System.out.println();
+		} // fin del for que itera las sucursales
+
+		// finalizada la iteracion de la sucursales cierra la conexion a la base
+		// de datos
+		HibernateSessionFactory.stopSessionFactory();
+		sucursalesHome = null;
+		ventaDiaraHome = null;
 	}
-	
+
 	/**
 	 * Retorna una List de objetos <code>Ventadiariaglobal</code>
-	 * correspondientes a las ventas de una sucursal por vendedor.	  
+	 * correspondientes a las ventas de una sucursal por vendedor.
+	 * 
 	 * @param url
 	 * @return
 	 */
@@ -144,88 +144,88 @@ public class ClienteVentasAlInstante implements Job {
 					venta.setCodsucursal(sucursal.getCodigo());
 					venta.setDiaoperativo(e.getDiaoperativo());
 					venta.setVendedor(e.getVendedor());
-					if(e.getVtaespecial() !=  null )
-							venta.setVentaespe(new Double(e.getVtaespecial().trim()));
-					venta.setVentagen(new Double(e.getVtageneral()));					
+					if (e.getVtaespecial() != null)
+						venta.setVentaespe(new Double(e.getVtaespecial().trim()));
+					venta.setVentagen(new Double(e.getVtageneral()));
+					venta.setUltactualizacion(new Date());
 					ventaList.add(venta);
 				}
 			} // fin del if empty
 		} catch (Exception e) {
-			e.printStackTrace();;
+			e.printStackTrace();			
 		}
-		
+
 		return ventaList;
 	}
-	
-	
+
 	/**
-	 * Valida si la sucursal actual se encuentra abierte con 
-	 * base en el horario de la misma. Recibe como parametro
-	 * un objeto <code>Sucursales</code>.
-	 * Ver mas informacion en la clase {@link com.dromedicas.dto.Sucursales}
+	 * Valida si la sucursal actual se encuentra abierte con base en el horario
+	 * de la misma. Recibe como parametro un objeto <code>Sucursales</code>. Ver
+	 * mas informacion en la clase {@link com.dromedicas.dto.Sucursales}
+	 * 
 	 * @param instance
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public boolean estaAbierta(Sucursales instance) throws ParseException {
 		boolean abierto = false;
 		Date currentDate = new Date();
 		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		Date diaOperativo = format.parse(instance.getDiaoperativo());
-		
+
 		Calendar aperturaN = Calendar.getInstance();
 		aperturaN.setTime(instance.getHoraperturagen());
-				
+
 		Calendar cierreN = Calendar.getInstance();
 		cierreN.setTime(instance.getHoracierregen());
-		
+
 		Calendar aperturaEs = Calendar.getInstance();
 		aperturaEs.setTime(instance.getHoraperturaes());
-		
+
 		Calendar cierreEs = Calendar.getInstance();
 		cierreEs.setTime(instance.getHoracierrees());
-		
+
 		Calendar horaActual = Calendar.getInstance();
 		horaActual.setTime(currentDate);
-		
-		//validacion del dia de la semana
+
+		// validacion del dia de la semana
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(diaOperativo);
 		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
-		if( diaSemana >= 2 && diaSemana <= 7){
-			
-			if( horaActual.get(Calendar.HOUR_OF_DAY) > aperturaN.get(Calendar.HOUR_OF_DAY) && 
-					horaActual.get(Calendar.HOUR_OF_DAY) < (cierreN.get(Calendar.HOUR_OF_DAY)+1) ){
+		if (diaSemana >= 2 && diaSemana <= 7) {
+
+			if (horaActual.get(Calendar.HOUR_OF_DAY) > aperturaN.get(Calendar.HOUR_OF_DAY)
+					&& horaActual.get(Calendar.HOUR_OF_DAY) < (cierreN.get(Calendar.HOUR_OF_DAY) + 1)) {
 				abierto = true;
 			}
-			
-			if(horaActual.get(Calendar.HOUR_OF_DAY) == aperturaN.get(Calendar.HOUR_OF_DAY) ){
-				if(horaActual.get(Calendar.MINUTE) >= aperturaN.get(Calendar.MINUTE))
+
+			if (horaActual.get(Calendar.HOUR_OF_DAY) == aperturaN.get(Calendar.HOUR_OF_DAY)) {
+				if (horaActual.get(Calendar.MINUTE) >= aperturaN.get(Calendar.MINUTE))
 					abierto = true;
 			}
-			
-			if(horaActual.get(Calendar.HOUR_OF_DAY) == (cierreN.get(Calendar.HOUR_OF_DAY)+1) ){
-				if(horaActual.get(Calendar.MINUTE) >= cierreN.get(Calendar.MINUTE))
+
+			if (horaActual.get(Calendar.HOUR_OF_DAY) == (cierreN.get(Calendar.HOUR_OF_DAY) + 1)) {
+				if (horaActual.get(Calendar.MINUTE) >= cierreN.get(Calendar.MINUTE))
 					abierto = true;
 			}
-		}else{//Domingos
-			if( horaActual.get(Calendar.HOUR_OF_DAY) > aperturaEs.get(Calendar.HOUR_OF_DAY) && 
-					horaActual.get(Calendar.HOUR_OF_DAY) < (cierreEs.get(Calendar.HOUR_OF_DAY)+1) ){
+		} else {// Domingos
+			if (horaActual.get(Calendar.HOUR_OF_DAY) > aperturaEs.get(Calendar.HOUR_OF_DAY)
+					&& horaActual.get(Calendar.HOUR_OF_DAY) < (cierreEs.get(Calendar.HOUR_OF_DAY) + 1)) {
 				abierto = true;
 			}
-			
-			if(horaActual.get(Calendar.HOUR_OF_DAY) == aperturaEs.get(Calendar.HOUR_OF_DAY) ){
-				if(horaActual.get(Calendar.MINUTE) >= aperturaEs.get(Calendar.MINUTE))
+
+			if (horaActual.get(Calendar.HOUR_OF_DAY) == aperturaEs.get(Calendar.HOUR_OF_DAY)) {
+				if (horaActual.get(Calendar.MINUTE) >= aperturaEs.get(Calendar.MINUTE))
 					abierto = true;
 			}
-			
-			if(horaActual.get(Calendar.HOUR_OF_DAY) == (cierreEs.get(Calendar.HOUR_OF_DAY)+1) ){
-				if(horaActual.get(Calendar.MINUTE) >= cierreEs.get(Calendar.MINUTE))
+
+			if (horaActual.get(Calendar.HOUR_OF_DAY) == (cierreEs.get(Calendar.HOUR_OF_DAY) + 1)) {
+				if (horaActual.get(Calendar.MINUTE) >= cierreEs.get(Calendar.MINUTE))
 					abierto = true;
-			}			
-		}//fin del else ppal
-				
+			}
+		} // fin del else ppal
+
 		return true;
 	}
-	
+
 }

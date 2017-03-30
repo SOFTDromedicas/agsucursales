@@ -23,5 +23,8 @@
         <property name="diaoperativo" type="string">
             <column name="diaoperativo" length="12" not-null="true" />
         </property>
+        <property name="ultactualizacion" type="timestamp">
+            <column name="ultactualizacion" length="0" />
+        </property>
     </class>
 </hibernate-mapping>
