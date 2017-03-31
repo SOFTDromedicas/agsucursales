@@ -1,6 +1,7 @@
 package com.dromedicas.dao;
 // Generated 28/03/2017 05:43:09 PM by Hibernate Tools 5.1.2.Final
 
+import java.util.Date;
 import java.util.List;
 import javax.naming.InitialContext;
 import org.apache.commons.logging.Log;
@@ -137,8 +138,8 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 	public Ventadiariaglobal getVentasDiaActual( String codSucursal , String diaActual, String vendedor) {
 		log.debug("finding all Sucursales instances");
 		try {			
-			String queryString = "from Ventadiariaglobal v where v.codsucursal = '"+ codSucursal + 
-								 "' and v.diaoperativo = '"+ diaActual +"' and v.vendedor ='"+ vendedor + "'";
+			String queryString = "from Ventadiariaglobal v where v.codsucursal = '"+ 
+		codSucursal + "' and v.diaoperativo = '"+ diaActual +"' and v.vendedor ='"+ vendedor + "'";
 			Query queryObject = this.sessionFactory.createQuery(queryString);
 			return (Ventadiariaglobal) queryObject.uniqueResult();
 		} catch (RuntimeException re) {
@@ -147,6 +148,12 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 		}
 	}
 	
+	/**
+	 * Metodo transaccional de servicio que guarda una instancia de 
+	 * <code>Ventadiariaglobal</code> recibido como parametro.
+	 * @param instance
+	 * @return
+	 */
 	public boolean guardarVentaDiaraGlobal(Ventadiariaglobal instance) {		
 		Session session = null;
 		Transaction txt = null;
@@ -162,18 +169,23 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 		finally{
 			//session.close();
 		}
-
 		return true;// si nada fallo, regresamos verdadero
 	}
 	
+	
+	/**
+	 * Metodo transaccional de servicio que elimina una instancia de 
+	 * <code>Ventadiariaglobal</code> recibido como parametro.
+	 * @param instance
+	 * @return
+	 */
 	public boolean eliminarVentaDiaraGlobal(Ventadiariaglobal instance) {
 		Session session = null;
 		Transaction txt = null;
 		try {
 			session = this.getSession();
-			txt = session.beginTransaction();
-			
-			//Eliminamos el alumno
+			txt = session.beginTransaction();			
+			//Eliminamos el registro de venta global
 			this.delete(instance);
 			txt.commit();
 		} catch (HibernateException e) {
@@ -182,7 +194,36 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 		} finally {
 			//session.close();
 		}
-
 		return true;// si nada falla regresamos verdadero
+	}
+	
+		
+	/**
+	 * Devuelve la ultima actualizacion de venta diaria global.
+	 * recibe como parametro un objeto <code>String</code> codigo
+	 * de la sucursal.
+	 * @param codSucursal
+	 * @return
+	 */
+	public Ventadiariaglobal ultimaActualizacion(String codSucursal){		
+		Session session = null;
+		Transaction txt = null;
+		Ventadiariaglobal ventaDto = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();			
+			String queryString = "from Ventadiariaglobal v where v.codsucursal in" +
+						"( select max(v_2.codsucursal) from Ventadiariaglobal v_2 "+
+						"where v_2.codsucursal = '"+ codSucursal +"')";
+			Query queryObject = this.sessionFactory.createQuery(queryString);
+			ventaDto = (Ventadiariaglobal) queryObject.uniqueResult();
+			txt.commit();
+		} catch (HibernateException e) {
+			txt.rollback();
+			throw e;
+		} finally {
+			//session.close();
+		}
+		return ventaDto;
 	}
 }

@@ -27,6 +27,10 @@ public class ClienteVentasAlInstante implements Job {
 	// Servicio Ventas al instante
 	private String servicio = "wsjson/ventainstante";
 
+	/**
+	 * Ejecuta el trabajo programado por el schedule de Ventas
+	 * al Instante.
+	 */
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		// Obtiene todas las Sucursales
@@ -45,7 +49,8 @@ public class ClienteVentasAlInstante implements Job {
 			// Revisa si la sucursal es 24 horas
 			if (sucursal.getEs24horas().trim().equals("true")) {
 				try {
-					System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
+					System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion() + " | "+
+							sucursal.getDescripcion()+servicio);
 					// consume servicio
 					List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
 					System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
@@ -74,6 +79,7 @@ public class ClienteVentasAlInstante implements Job {
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
+					//Manejo de error en la consulta del ws
 				}
 
 			} else {
@@ -226,6 +232,38 @@ public class ClienteVentasAlInstante implements Job {
 		} // fin del else ppal
 
 		return true;
+	}
+	
+	
+	private void notificarFallaEmail(Sucursales instance){}
+	
+	
+	/**
+	 * 
+	 * @param instance
+	 */
+	private void notificarSMS(Sucursales instance){
+		String nroCel = "3102097474";
+		
+		//busca la ultima actualizacion de la sucursal
+		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
+		String  ultActTemp = 
+				ventaDiaraHome.ultimaActualizacion(instance.getCodigo()).getDiaoperativo();
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			Date ultimaActualizacion = format.parse(ultActTemp);
+		} catch (ParseException e) {
+			log.error("Error al obtener la ultima actualizacion" + e.getMessage());
+		}
+		
+		
+		
+		
+		
+		
+		
+		//si el tiempor transcurrido es mayor a 1 hora envia el mansa 
+		//de texto 
 	}
 
 }
