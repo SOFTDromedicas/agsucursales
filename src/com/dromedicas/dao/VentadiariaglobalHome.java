@@ -212,8 +212,8 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();			
-			String queryString = "from Ventadiariaglobal v where v.codsucursal in" +
-						"( select max(v_2.codsucursal) from Ventadiariaglobal v_2 "+
+			String queryString = "from Ventadiariaglobal v where v.id in" +
+						"( select max(v_2.id) from Ventadiariaglobal v_2 "+
 						"where v_2.codsucursal = '"+ codSucursal +"')";
 			Query queryObject = this.sessionFactory.createQuery(queryString);
 			ventaDto = (Ventadiariaglobal) queryObject.uniqueResult();

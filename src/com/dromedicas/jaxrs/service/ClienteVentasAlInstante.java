@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.quartz.Job;
@@ -18,6 +19,7 @@ import com.dromedicas.dao.SucursalesHome;
 import com.dromedicas.dao.VentadiariaglobalHome;
 import com.dromedicas.dto.Sucursales;
 import com.dromedicas.dto.Ventadiariaglobal;
+import com.dromedicas.servicio.EnviarSms;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -50,7 +52,7 @@ public class ClienteVentasAlInstante implements Job {
 			if (sucursal.getEs24horas().trim().equals("true")) {
 				try {
 					System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion() + " | "+
-							sucursal.getDescripcion()+servicio);
+							sucursal.getRutaweb()+servicio);
 					// consume servicio
 					List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
 					System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
@@ -80,6 +82,7 @@ public class ClienteVentasAlInstante implements Job {
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
 					//Manejo de error en la consulta del ws
+					notificarSMS(sucursal);
 				}
 
 			} else {
@@ -105,8 +108,7 @@ public class ClienteVentasAlInstante implements Job {
 									log.info("Elimina valor actual");
 									ventaDiaraHome.eliminarVentaDiaraGlobal(ventaAnterior);
 								}
-								// Perisite el(los) nuevo(s) objeto(s)
-								// Ventadiariaglobal
+								// Perisite el(los) nuevo(s) objeto(s) Ventadiariaglobal
 								System.out.println("Grabando el nuevo Valor valor actual");
 								ventaDiaraHome.guardarVentaDiaraGlobal(e);
 							}
@@ -116,6 +118,7 @@ public class ClienteVentasAlInstante implements Job {
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
+					notificarSMS(sucursal);
 				}
 
 			} // fin del else ppal
@@ -123,8 +126,6 @@ public class ClienteVentasAlInstante implements Job {
 			System.out.println();
 		} // fin del for que itera las sucursales
 
-		// finalizada la iteracion de la sucursales cierra la conexion a la base
-		// de datos
 		HibernateSessionFactory.stopSessionFactory();
 		sucursalesHome = null;
 		ventaDiaraHome = null;
@@ -242,28 +243,41 @@ public class ClienteVentasAlInstante implements Job {
 	 * 
 	 * @param instance
 	 */
-	private void notificarSMS(Sucursales instance){
+	private void notificarSMS(Sucursales instance) {
 		String nroCel = "3102097474";
-		
-		//busca la ultima actualizacion de la sucursal
+
+		// busca la ultima actualizacion de la sucursal
 		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
-		String  ultActTemp = 
-				ventaDiaraHome.ultimaActualizacion(instance.getCodigo()).getDiaoperativo();
-		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		try {
-			Date ultimaActualizacion = format.parse(ultActTemp);
-		} catch (ParseException e) {
+			log.info("Enviando SMS a:");
+
+			Date fechaActual = new Date();
+			Date ultimaActualizacion = ventaDiaraHome.ultimaActualizacion(instance.getCodigo()).getUltactualizacion();
+			
+			if (ultimaActualizacion != null) {
+				Calendar calFechaAct = Calendar.getInstance();
+				calFechaAct.setTime(fechaActual);
+
+				Calendar calUltAct = Calendar.getInstance();
+				calUltAct.setTime(ultimaActualizacion);
+
+				// obteniendo diferencia de dias
+				long diff = fechaActual.getTime() - ultimaActualizacion.getTime();
+				long diferencia = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+
+				System.out.println("Dias sin actualizar: " + diferencia);
+				if (diferencia > 0) {
+					log.info("Envia SMS por desconexion mayor a un dia");
+					EnviarSms.enviarSms("Mensaje desde DROPOS. La sucursal " + instance.getDescripcion()
+							+ " no actualiza Ventas al instante desde hace " + diferencia + " dia(s)."
+							+ " Ultima Actualizacion  " + ultimaActualizacion, nroCel);
+				} 
+			}
+
+		} catch (Exception e) {
 			log.error("Error al obtener la ultima actualizacion" + e.getMessage());
 		}
-		
-		
-		
-		
-		
-		
-		
-		//si el tiempor transcurrido es mayor a 1 hora envia el mansa 
-		//de texto 
+
 	}
 
 }
