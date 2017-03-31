@@ -28,7 +28,7 @@ public class QuartzListener implements ServletContextListener {
 			JobDetail job = newJob(ClienteVentasAlInstante.class).withIdentity("VentasAlInstante", "Group").build();
 
 			Trigger trigger = newTrigger().withIdentity("ActVentasAlInstante", "Group")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/4 * * * ?"))
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/10 * * * ?"))
 					.build();
 
 			// Setup the Job and Trigger with Scheduler & schedule jobs

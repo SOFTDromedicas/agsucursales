@@ -19,6 +19,7 @@ import com.dromedicas.dao.SucursalesHome;
 import com.dromedicas.dao.VentadiariaglobalHome;
 import com.dromedicas.dto.Sucursales;
 import com.dromedicas.dto.Ventadiariaglobal;
+import com.dromedicas.servicio.EnviarMailAlertas;
 import com.dromedicas.servicio.EnviarSms;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -82,7 +83,7 @@ public class ClienteVentasAlInstante implements Job {
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
 					//Manejo de error en la consulta del ws
-					notificarSMS(sucursal);
+					enviarNotificaciones(sucursal);
 				}
 
 			} else {
@@ -118,9 +119,8 @@ public class ClienteVentasAlInstante implements Job {
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
-					notificarSMS(sucursal);
+					enviarNotificaciones(sucursal);
 				}
-
 			} // fin del else ppal
 
 			System.out.println();
@@ -235,25 +235,21 @@ public class ClienteVentasAlInstante implements Job {
 		return true;
 	}
 	
-	
-	private void notificarFallaEmail(Sucursales instance){}
-	
-	
 	/**
-	 * 
+	 * Envia notificaciones SMS y Email si no se esta actualizando
+	 * las ventas por periodos mayor a una hora
 	 * @param instance
 	 */
-	private void notificarSMS(Sucursales instance) {
-		String nroCel = "3102097474";
-
+	private void enviarNotificaciones(Sucursales instance) {
 		// busca la ultima actualizacion de la sucursal
 		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
 		try {
 			log.info("Enviando SMS a:");
 
 			Date fechaActual = new Date();
-			Date ultimaActualizacion = ventaDiaraHome.ultimaActualizacion(instance.getCodigo()).getUltactualizacion();
-			
+			Date ultimaActualizacion = ventaDiaraHome.ultimaActualizacion(instance.getCodigo())
+								.getUltactualizacion();
+
 			if (ultimaActualizacion != null) {
 				Calendar calFechaAct = Calendar.getInstance();
 				calFechaAct.setTime(fechaActual);
@@ -268,16 +264,42 @@ public class ClienteVentasAlInstante implements Job {
 				System.out.println("Dias sin actualizar: " + diferencia);
 				if (diferencia > 0) {
 					log.info("Envia SMS por desconexion mayor a un dia");
-					EnviarSms.enviarSms("Mensaje desde DROPOS. La sucursal " + instance.getDescripcion()
-							+ " no actualiza Ventas al instante desde hace " + diferencia + " dia(s)."
-							+ " Ultima Actualizacion  " + ultimaActualizacion, nroCel);
-				} 
+					notificarSMS(instance.getDescripcion(), diferencia, ultimaActualizacion);
+				}else{
+					int difHoras = calFechaAct.get(Calendar.HOUR) - calUltAct.get(Calendar.HOUR) ;
+					int difMinutes = calFechaAct.get(Calendar.MINUTE) - calUltAct.get(Calendar.MINUTE) ;
+					if( difMinutes > 0 ){
+						notificarFallaEmail(instance, ultimaActualizacion);
+					}
+				}
 			}
-
 		} catch (Exception e) {
 			log.error("Error al obtener la ultima actualizacion" + e.getMessage());
 		}
 
 	}
+	
+	
+	
+	private void notificarFallaEmail(Sucursales instance, Date ultActualizacion){
+		EnviarMailAlertas.enviarEmailAlertaVentas(instance,ultActualizacion);
+		
+	}
+	
+	
+	/**
+	 * Envia una notificacion SMS sobre el proceso de Ventas al Instante
+	 * con la informacion recibida como parametro
+	 * @param instance
+	 */
+	private void notificarSMS(String sucursal, long diferencia, Date ultimaActualizacion) {
+		String nroCel = "3102097474";
+
+		EnviarSms.enviarSms(
+				"Mensaje desde DROPOS. La sucursal " + sucursal + " no actualiza Ventas al instante desde hace "
+						+ diferencia + " dia(s)." + " Ultima Actualizacion  " + ultimaActualizacion,
+				nroCel);
+	}
+	
 
 }
