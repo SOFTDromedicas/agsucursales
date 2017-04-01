@@ -89,10 +89,6 @@ public class ClienteVentasAlInstante implements Job {
 				try {
 					if ( estaAbierta(sucursal) ) {
 						
-						if(sucursal.getDescripcion().equals("FARMANORTE 18"))
-							enviarNotificaciones(sucursal);
-						
-						
 						System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
 						// consume servicio
 						List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
@@ -276,7 +272,7 @@ public class ClienteVentasAlInstante implements Job {
 				}else{
 					int difHoras = calFechaAct.get(Calendar.HOUR) - calUltAct.get(Calendar.HOUR) ;
 					int difMinutes = calFechaAct.get(Calendar.MINUTE) - calUltAct.get(Calendar.MINUTE);					
-					if( difMinutes > 0 ){
+					if( difMinutes > 10 ){
 						System.out.println("Ingrese a enviar enviando Email");
 						notificarFallaEmail(instance, ultimaActualizacion);
 					}
