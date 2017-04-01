@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 1/04/2017 11:59:13 AM by Hibernate Tools 5.1.2.Final -->
+<hibernate-mapping>
+    <class name="com.dromedicas.dto.Bodegas" table="bodegas" catalog="droposservidordb" optimistic-lock="version">
+        <id name="bodegaid" type="java.lang.Integer">
+            <column name="bodegaid" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="sucursales" class="com.dromedicas.dto.Sucursales" fetch="select">
+            <column name="sucursalid" not-null="true" />
+        </many-to-one>
+        <property name="codbodega" type="string">
+            <column name="codbodega" length="3" not-null="true" />
+        </property>
+        <property name="nombodega" type="string">
+            <column name="nombodega" length="35" not-null="true" />
+        </property>
+        <property name="nomcorto" type="string">
+            <column name="nomcorto" length="5" not-null="true" />
+        </property>
+        <property name="tipobodega" type="string">
+            <column name="tipobodega" length="3" not-null="true" />
+        </property>
+        <property name="remidestino" type="string">
+            <column name="remidestino" length="5" />
+        </property>
+        <property name="activa" type="string">
+            <column name="activa" length="1" not-null="true" />
+        </property>
+        <property name="bodespecial" type="string">
+            <column name="bodespecial" length="8" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

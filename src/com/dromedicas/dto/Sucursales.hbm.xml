@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 28/03/2017 05:43:09 PM by Hibernate Tools 5.1.2.Final -->
+<!-- Generated 1/04/2017 11:59:13 AM by Hibernate Tools 5.1.2.Final -->
 <hibernate-mapping>
     <class name="com.dromedicas.dto.Sucursales" table="sucursales" catalog="droposservidordb">
         <id name="sucursalid" type="java.lang.Integer">
             <column name="sucursalid" />
             <generator class="identity" />
         </id>
-        <property name="version" type="string">
-            <column name="version" length="10" not-null="true"  />
-        </property>
+        <version name="version" type="string">
+            <column name="version" length="10" not-null="true" />
+        </version>
         <property name="codigo" type="string">
             <column name="codigo" length="3" not-null="true" unique="true" />
         </property>
@@ -80,10 +80,10 @@
         <property name="lispre5" type="string">
             <column name="lispre5" length="8" />
         </property>
-        <property name="dctodesde" type="java.util.Date">
+        <property name="dctodesde" type="date">
             <column name="dctodesde" length="0" not-null="true" />
         </property>
-        <property name="dctohasta" type="java.util.Date">
+        <property name="dctohasta" type="date">
             <column name="dctohasta" length="0" not-null="true" />
         </property>
         <property name="porcen" type="double">
@@ -124,5 +124,11 @@
         <property name="pervenregu" type="string">
             <column name="pervenregu" length="8" />
         </property>
+        <set name="bodegases" table="bodegas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="sucursalid" not-null="true" />
+            </key>
+            <one-to-many class="com.dromedicas.dto.Bodegas" />
+        </set>
     </class>
 </hibernate-mapping>

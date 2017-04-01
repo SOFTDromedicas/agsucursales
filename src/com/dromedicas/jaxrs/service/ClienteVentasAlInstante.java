@@ -43,7 +43,7 @@ public class ClienteVentasAlInstante implements Job {
 		log.info("Obteniendo Sucursales");
 		List<Sucursales> sucursalList = sucursalesHome.findAll();
 		System.out.println("Total Sucursales: " + sucursalList.size());
-		Logger log = Logger.getLogger(ClienteVentasAlInstante.class);
+		
 
 		// Itera Todas las sucursales
 		for (Sucursales sucursal : sucursalList) {
@@ -247,7 +247,7 @@ public class ClienteVentasAlInstante implements Job {
 		System.out.println("Ingrese a enviar Notificaciones");
 		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
 		try {
-			log.info("Enviando SMS a:");
+			log.info("Enviando Notificacion");
 
 			Date fechaActual = new Date();
 			Date ultimaActualizacion = ventaDiaraHome.ultimaActualizacion(instance.getCodigo())
@@ -273,7 +273,7 @@ public class ClienteVentasAlInstante implements Job {
 					int difHoras = calFechaAct.get(Calendar.HOUR) - calUltAct.get(Calendar.HOUR) ;
 					int difMinutes = calFechaAct.get(Calendar.MINUTE) - calUltAct.get(Calendar.MINUTE);					
 					if( difMinutes > 10 ){
-						System.out.println("Ingrese a enviar enviando Email");
+						System.out.println("Ingrese a enviar  Email");
 						notificarFallaEmail(instance, ultimaActualizacion);
 					}
 				}

@@ -16,5 +16,6 @@
         <mapping resource="com/dromedicas/dto/Sucursales.hbm.xml" />
         <mapping resource="com/dromedicas/dto/Ventadiariaglobal.hbm.xml" />
         <mapping resource="com/dromedicas/dto/Existencias.hbm.xml" />
+        <mapping resource="com/dromedicas/dto/Bodegas.hbm.xml" />
     </session-factory>
 </hibernate-configuration>
