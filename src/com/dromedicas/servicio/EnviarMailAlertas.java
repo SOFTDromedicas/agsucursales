@@ -25,7 +25,7 @@ public class EnviarMailAlertas {
 			SimpleDateFormat sdf = new SimpleDateFormat(
 					"dd/MM/yyyy - hh:mm:ss aaa");
 			File inputHtml = new File(
-					"/EmailTemplate/dripresponsive.html");
+					"C:/FarmapuntosEmail/dripresponsive.html");
 			// Asginamos el archivo al objeto analizador Document
 			Document doc = Jsoup.parse(inputHtml, "UTF-8");
 			// obtengo los id's del DOM a los que deseo insertar los valores
@@ -46,11 +46,11 @@ public class EnviarMailAlertas {
 
 			// Propiedades de la conexión
 			Properties props = new Properties();
-			props.setProperty("mail.smtp.host", "192.168.1.6");
+			props.setProperty("mail.smtp.host", "stve.wnkserver5.com");
 			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
 			// entrada 110
 			props.setProperty("mail.smtp.user",
-								"notificaciones@monedafrontera.com");
+								"pruebassistemas@dromedicas.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -64,9 +64,9 @@ public class EnviarMailAlertas {
 			// multiples direcciones
 		String[] to = { "lfernandortiz@gmail.com",
 						"sistemas2@dromedicas.com.co",
-						"sistemas@dromedicas.com.co",
+						/*"sistemas@dromedicas.com.co",
 						"saidrodriguez@gmail.com"
-						};
+						*/};
 		
 			
 			// arreglo con las direcciones de correo
@@ -81,12 +81,12 @@ public class EnviarMailAlertas {
 			message.setFrom(new InternetAddress(
 					"notificaciones@monedafrontera.com"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
-			message.setSubject("ALERTA DE SEGURIDAD - SISTEMA MONEDA FRONTERA");
+			message.setSubject("FALLA ACTUALIZACION VENTAS AL INSTANTE " + sucursal);
 			message.setContent(doc.html(), "text/html; charset=utf-8");
 
 			// Lo enviamos.
 			Transport t = session.getTransport("smtp");
-			t.connect("notificaciones@monedafrontera.com", "Carlos0411");
+			t.connect("pruebassistemas@dromedicas.com.co", "Dromedicas2013.");
 			t.sendMessage(message, message.getAllRecipients());
 			
 			// Cierre de la conexion

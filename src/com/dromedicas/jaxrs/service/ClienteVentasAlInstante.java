@@ -268,7 +268,7 @@ public class ClienteVentasAlInstante implements Job {
 				}else{
 					int difHoras = calFechaAct.get(Calendar.HOUR) - calUltAct.get(Calendar.HOUR) ;
 					int difMinutes = calFechaAct.get(Calendar.MINUTE) - calUltAct.get(Calendar.MINUTE) ;
-					if( difMinutes > 0 ){
+					if( difHoras > 0 ){
 						notificarFallaEmail(instance, ultimaActualizacion);
 					}
 				}
