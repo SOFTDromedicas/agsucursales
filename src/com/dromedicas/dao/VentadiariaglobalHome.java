@@ -124,7 +124,7 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 	}
 	
 	public List findAll() {
-		log.debug("finding all Sucursales instances");
+		log.debug("finding all Ventadiariaglobal instances");
 		try {			
 			String queryString = "from Ventadiariaglobal";
 			Query queryObject = this.sessionFactory.createQuery(queryString);
@@ -155,6 +155,7 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 	 * @return
 	 */
 	public boolean guardarVentaDiaraGlobal(Ventadiariaglobal instance) {		
+		
 		Session session = null;
 		Transaction txt = null;
 		try {

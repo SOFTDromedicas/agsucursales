@@ -21,6 +21,7 @@ public class EnviarMailAlertas {
 	
 	public static void enviarEmailAlertaVentas(Sucursales instance , Date fecha) {
 		String sucursal = instance.getDescripcion();
+		System.out.println("Clase enviar Email Alerta");
 		try{
 			SimpleDateFormat sdf = new SimpleDateFormat(
 					"dd/MM/yyyy - hh:mm:ss aaa");
@@ -39,8 +40,6 @@ public class EnviarMailAlertas {
 			
 			Element bank = doc.select("span#ultActualizacion").first();
 			bank.append(sdf.format(fecha));
-		
-			
 			
 			// envia el mail
 
@@ -62,11 +61,11 @@ public class EnviarMailAlertas {
 			 * Ojo aca reemplazar por consulta
 			 */
 			// multiples direcciones
-		String[] to = { "lfernandortiz@gmail.com",
-						"sistemas2@dromedicas.com.co",
-						/*"sistemas@dromedicas.com.co",
-						"saidrodriguez@gmail.com"
-						*/};
+			String[] to = { "lfernandortiz@gmail.com",
+							"sistemas2@dromedicas.com.co",
+							"sistemas@dromedicas.com.co",
+							"saidrodriguez@gmail.com"
+							};
 		
 			
 			// arreglo con las direcciones de correo
@@ -79,7 +78,7 @@ public class EnviarMailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
 			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(
-					"notificaciones@monedafrontera.com"));
+					"pruebassistemas@dromedicas.com.co"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			message.setSubject("FALLA ACTUALIZACION VENTAS AL INSTANTE " + sucursal);
 			message.setContent(doc.html(), "text/html; charset=utf-8");

@@ -37,7 +37,6 @@ public class ClienteVentasAlInstante implements Job {
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		// Obtiene todas las Sucursales
-		// HibernateSessionFactory.openSessionFactory();
 		SucursalesHome sucursalesHome = new SucursalesHome();// Objeto DAO para
 																// sucursales
 		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
@@ -52,8 +51,7 @@ public class ClienteVentasAlInstante implements Job {
 			// Revisa si la sucursal es 24 horas
 			if (sucursal.getEs24horas().trim().equals("true")) {
 				try {
-					System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion() + " | "+
-							sucursal.getRutaweb()+servicio);
+					System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion() );
 					// consume servicio
 					List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
 					System.out.println("Tamanio Actual de elementos: " + ventasActualList.size());
@@ -79,18 +77,22 @@ public class ClienteVentasAlInstante implements Job {
 					}
 
 				} catch (Exception e) {
+					//Manejo de error en la consulta del ws
+					enviarNotificaciones(sucursal);
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
-					//Manejo de error en la consulta del ws
-					enviarNotificaciones(sucursal);
 				}
 
 			} else {
-				// revisa si la hora actual esta entre la hora de apertura y +1
+				// revisa si la hora actual esta entre la hora de apertura y cierre +1
 				try {
-					boolean abierto = estaAbierta(sucursal);
-					if (abierto) {
+					if ( estaAbierta(sucursal) ) {
+						
+						if(sucursal.getDescripcion().equals("FARMANORTE 18"))
+							enviarNotificaciones(sucursal);
+						
+						
 						System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
 						// consume servicio
 						List<Ventadiariaglobal> ventasActualList = obtenertWSVentaAlInstante(sucursal);
@@ -115,11 +117,11 @@ public class ClienteVentasAlInstante implements Job {
 							}
 						}
 					}
-				} catch (ParseException e) {
+				} catch (Exception e) {
+					enviarNotificaciones(sucursal);
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
-					enviarNotificaciones(sucursal);
 				}
 			} // fin del else ppal
 
@@ -145,21 +147,25 @@ public class ClienteVentasAlInstante implements Job {
 		VentaAlInstanteWrap response = webResource.accept("application/json").get(VentaAlInstanteWrap.class);
 		try {
 			List<VentaAlInstanteDetalle> detalle = response.getMessage().getData();
-			if (!detalle.isEmpty()) {
-				for (VentaAlInstanteDetalle e : detalle) {
-					Ventadiariaglobal venta = new Ventadiariaglobal();
-					venta.setCodsucursal(sucursal.getCodigo());
-					venta.setDiaoperativo(e.getDiaoperativo());
-					venta.setVendedor(e.getVendedor());
-					if (e.getVtaespecial() != null)
-						venta.setVentaespe(new Double(e.getVtaespecial().trim()));
-					venta.setVentagen(new Double(e.getVtageneral()));
-					venta.setUltactualizacion(new Date());
-					ventaList.add(venta);
-				}
-			} // fin del if empty
+			if (detalle != null) {
+				if (!detalle.isEmpty()) {
+					for (VentaAlInstanteDetalle e : detalle) {
+						Ventadiariaglobal venta = new Ventadiariaglobal();
+						venta.setCodsucursal(sucursal.getCodigo());
+						venta.setDiaoperativo(e.getDiaoperativo());
+						venta.setVendedor(e.getVendedor());
+						if (e.getVtaespecial() != null)
+							venta.setVentaespe(new Double(e.getVtaespecial().trim()));
+						venta.setVentagen(new Double(e.getVtageneral()));
+						venta.setUltactualizacion(new Date());
+						ventaList.add(venta);
+					}
+				} // fin del if empty
+			}else{
+				log.info("No hay informacion de ventas para el dia operativo actual");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();			
+			e.printStackTrace();
 		}
 
 		return ventaList;
@@ -242,6 +248,7 @@ public class ClienteVentasAlInstante implements Job {
 	 */
 	private void enviarNotificaciones(Sucursales instance) {
 		// busca la ultima actualizacion de la sucursal
+		System.out.println("Ingrese a enviar Notificaciones");
 		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
 		try {
 			log.info("Enviando SMS a:");
@@ -260,15 +267,17 @@ public class ClienteVentasAlInstante implements Job {
 				// obteniendo diferencia de dias
 				long diff = fechaActual.getTime() - ultimaActualizacion.getTime();
 				long diferencia = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-
 				System.out.println("Dias sin actualizar: " + diferencia);
+				
 				if (diferencia > 0) {
 					log.info("Envia SMS por desconexion mayor a un dia");
-					notificarSMS(instance.getDescripcion(), diferencia, ultimaActualizacion);
+					//notificarSMS(instance.getDescripcion(), diferencia, ultimaActualizacion);
+					
 				}else{
 					int difHoras = calFechaAct.get(Calendar.HOUR) - calUltAct.get(Calendar.HOUR) ;
-					int difMinutes = calFechaAct.get(Calendar.MINUTE) - calUltAct.get(Calendar.MINUTE) ;
-					if( difHoras > 0 ){
+					int difMinutes = calFechaAct.get(Calendar.MINUTE) - calUltAct.get(Calendar.MINUTE);					
+					if( difMinutes > 0 ){
+						System.out.println("Ingrese a enviar enviando Email");
 						notificarFallaEmail(instance, ultimaActualizacion);
 					}
 				}

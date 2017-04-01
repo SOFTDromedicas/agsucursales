@@ -117,10 +117,10 @@ public  class  HibernateSessionFactory {
 		return configuration;
 	}
 	
+	
 	public static void stopSessionFactory(){
 		//getSessionFactory().close();
-		getSession().close();
-		
+		getSession().close();		
 	}
 	
 	public static void openSessionFactory(){
