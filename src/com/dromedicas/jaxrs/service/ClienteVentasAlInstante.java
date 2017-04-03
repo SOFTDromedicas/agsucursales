@@ -274,7 +274,7 @@ public class ClienteVentasAlInstante implements Job {
 					int difMinutes = calFechaAct.get(Calendar.MINUTE) - calUltAct.get(Calendar.MINUTE);					
 					if( difMinutes > 10 ){
 						System.out.println("Ingrese a enviar  Email");
-						notificarFallaEmail(instance, ultimaActualizacion);
+						//notificarFallaEmail(instance, ultimaActualizacion);
 					}
 				}
 			}

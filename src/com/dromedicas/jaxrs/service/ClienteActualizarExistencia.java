@@ -40,14 +40,16 @@ public class ClienteActualizarExistencia implements Job {
 		
 		//Recorre las sucursales
 		for(Sucursales sucursal : sucursalList){
-			System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion() );
+			System.out.println("Consume servicio Existencias para la Sucursal: " + sucursal.getDescripcion() );
 			
 			if (sucursal.getEs24horas().trim().equals("true")) {				
 				try {
 					//Consume el servicio
 					List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
-					for( Existencias e : existenciaList){
-						System.out.println("Codigo Bodega: "+ e.getId().getBodegaid() + " Producto id: " + e.getId().getProductoid());
+					for( int i = 0;  i < existenciaList.size(); i++){
+						System.out.println( ""+ i +"- Codigo Bodega: "+ existenciaList.get(i).getId().getBodegaid() + 
+												" Producto id: " + existenciaList.get(i).getId().getProductoid() +
+												" Cantidad:" + existenciaList.get(i).getCantidad());
 					}
 					//ubica la bodega actual
 					//coloca las existencias en cero
@@ -62,6 +64,18 @@ public class ClienteActualizarExistencia implements Job {
 			}else{				
 				try {
 					if(estaAbierta(sucursal) ){
+						
+						//Consume el servicio
+						List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
+						for( int i = 0;  i < existenciaList.size(); i++){
+							System.out.println( ""+ i +"- Codigo Bodega: "+ existenciaList.get(i).getId().getBodegaid() + 
+									" Producto id: " + existenciaList.get(i).getId().getProductoid() +
+									" Cantidad:" + existenciaList.get(i).getCantidad());
+						}
+						//ubica la bodega actual
+						//coloca las existencias en cero
+						//y actualiza los productos actuales con los valores recibidos del ws
+						
 						
 					}
 				} catch (ParseException e) {
@@ -93,6 +107,8 @@ public class ClienteActualizarExistencia implements Job {
 	private List<Existencias> obtenertWSExistencia( Sucursales sucursal ){
 		List<Existencias> existenciasList = new ArrayList<Existencias>();
 		//cliente Jersey- consume el WS
+		System.out.println("Servicio Existencias: " + sucursal.getDescripcion() + " | " + sucursal.getRutaweb() + this.servicio);
+		
 		Client client = Client.create();
 		WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicio);
 		ExistenciaActualWrap response = webResource.accept("application/json").get(ExistenciaActualWrap.class);

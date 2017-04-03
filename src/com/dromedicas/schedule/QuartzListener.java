@@ -29,13 +29,13 @@ public class QuartzListener implements ServletContextListener {
 		try {
 			// Setup the Job class and the Job group
 			JobDetail job = newJob(ClienteVentasAlInstante.class).withIdentity("VentasAlInstante", "Group").build();
-			JobDetail jobExistencias = newJob(ClienteActualizarExistencia.class).withIdentity("VentasAlInstante", "Group").build();
+			JobDetail jobExistencias = newJob(ClienteActualizarExistencia.class).withIdentity("Existencias", "ExisGroup").build();
 
 			Trigger trigger = newTrigger().withIdentity("ActVentasAlInstante", "Group")
 					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/4 * * * ?"))
 					.build();
 			
-			Trigger triggerExistencias = newTrigger().withIdentity("ActVentasAlInstante", "Group")
+			Trigger triggerExistencias = newTrigger().withIdentity("ActExistencia", "ExisGroup")
 					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ?"))
 					.build();
 			

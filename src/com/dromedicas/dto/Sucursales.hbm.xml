@@ -8,9 +8,9 @@
             <column name="sucursalid" />
             <generator class="identity" />
         </id>
-        <version name="version" type="string">
-            <column name="version" length="10" not-null="true" />
-        </version>
+        <property name="version" type="string">
+            <column name="version" length="10" not-null="true"  />
+        </property>
         <property name="codigo" type="string">
             <column name="codigo" length="3" not-null="true" unique="true" />
         </property>

@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 28/03/2017 05:43:09 PM by Hibernate Tools 5.1.2.Final -->
 <hibernate-mapping>
-    <class name="com.dromedicas.dto.Existencias" table="existencias" catalog="droposservidordb" optimistic-lock="version">
+    <class name="com.dromedicas.dto.Existencias" table="existencias2" catalog="droposservidordb" optimistic-lock="version">
         <composite-id name="id" class="com.dromedicas.dto.ExistenciasId">
             <key-property name="bodegaid" type="int">
                 <column name="bodegaid" />
