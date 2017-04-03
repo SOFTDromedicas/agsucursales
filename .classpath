@@ -25,5 +25,48 @@
 	<classpathentry kind="lib" path="C:/workspacedos/libs/hibernate-release-5.1.2.Final/lib/required/jboss-logging-3.3.0.Final.jar"/>
 	<classpathentry kind="lib" path="C:/workspacedos/libs/hibernate-release-5.1.2.Final/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="C:/workspacedos/libs/mysql-connector-java-5.0.8/mysql-connector-java-5.0.8/mysql-connector-java-5.0.8-bin.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/aopalliance-repackaged-2.5.0-b32.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/hk2-api-2.5.0-b32.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/hk2-locator-2.5.0-b32.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/hk2-utils-2.5.0-b32.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/javassist-3.20.0-GA.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/javax.annotation-api-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/javax.inject-2.5.0-b32.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/javax.servlet-api-3.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/javax.ws.rs-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/jaxb-api-2.2.7.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/jersey-client.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/jersey-common.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/jersey-container-servlet.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/jersey-container-servlet-core.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/jersey-guava-2.25.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/jersey-media-jaxb.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/jersey-server.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/org.osgi.core-4.2.0.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/osgi-resource-locator-1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/persistence-api-1.0.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/@todajersey/validation-api-1.1.0.Final.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey jax-rs/api/javax.ws.rs-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jackson-jaxrs-1.9.2.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jackson-xc-1.9.2.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jersey-client-1.19.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jersey-core-1.19.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jersey-json-1.19.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jersey-server-1.19.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jersey-servlet-1.19.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jettison-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jersey-archive-1.19.1/jersey-archive-1.19.1/lib/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/quartz-2.2.3-distribution/quartz-2.2.3/lib/c3p0-0.9.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/quartz-2.2.3-distribution/quartz-2.2.3/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/quartz-2.2.3-distribution/quartz-2.2.3/lib/quartz-2.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/quartz-2.2.3-distribution/quartz-2.2.3/lib/quartz-jobs-2.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/quartz-2.2.3-distribution/quartz-2.2.3/lib/slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/quartz-2.2.3-distribution/quartz-2.2.3/lib/slf4j-log4j12-1.7.7.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jsoup/jsoup-1.9.2.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jsoup/jsoup-1.9.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/jsoup/jsoup-1.9.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/workspacedos/libs/agente/javax.mail-1.5.6.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
