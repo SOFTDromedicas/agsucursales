@@ -5,14 +5,17 @@ import java.util.List;
 import javax.naming.InitialContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 
 import com.dromedicas.dto.Existencias;
 import com.dromedicas.dto.ExistenciasId;
+import com.dromedicas.dto.Ventadiariaglobal;
 
 /**
  * Home object for domain model class Existencias.
@@ -131,5 +134,61 @@ public class ExistenciasHome extends BaseHibernateDAO {
 			log.error("find all failed", re);
 			throw re;
 		}
+	}
+	
+	
+	/**
+	 * Metodo transaccional de servicio que actualiza una instancia de
+	 * <code>Existencias</code> recibido como parametro.
+	 * @param instance
+	 * @return
+	 */
+	public boolean actualizarExistneciaProducto(Existencias instance) {		
+		
+		Session session = null;
+		Transaction txt = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();
+			this.merge(instance);
+			txt.commit();
+		} catch (HibernateException e) {
+			txt.rollback();
+			throw e;
+		}
+		finally{
+			//session.close();
+		}
+		return true;// si nada fallo, regresamos verdadero
+	}
+	
+	
+	/**
+	 * Metodo transaccional de servicio que asigna la cantidad  de cero 
+	 * para el objeto  <code>Existencias</code> recibido como parametro.
+	 * @param instance
+	 * @return
+	 */
+	public boolean existenciaProductoACero(Integer bodedgaId) {		
+		
+		Session session = null;
+		Transaction txt = null;
+		log.info("Actualizando existencias para la Bodega con id : " + bodedgaId);				
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();			
+			String queryString = 
+					"update Existencias e set e.cantidad = 0 where e.id.bodegaid = " + bodedgaId;
+			Query queryObject = this.sessionFactory.createQuery(queryString);
+			//ventaDto = (Ventadiariaglobal) queryObject.uniqueResult();
+			txt.commit();
+		} catch (HibernateException e) {
+			txt.rollback();
+			throw e;
+		}
+		finally{
+			//session.close();
+		}
+		return true;// si nada fallo, regresamos verdadero
 	}
 }

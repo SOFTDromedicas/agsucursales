@@ -13,6 +13,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import com.dromedicas.dao.ExistenciasHome;
 import com.dromedicas.dao.HibernateSessionFactory;
 import com.dromedicas.dao.SucursalesHome;
 import com.dromedicas.dto.Existencias;
@@ -37,6 +38,7 @@ public class ClienteActualizarExistencia implements Job {
 		log.info("Obteniendo Sucursales");
 		List<Sucursales> sucursalList = sucursalHome.findAll();
 		System.out.println("Total Sucursales Existencias: " + sucursalList.size());
+		ExistenciasHome exisHome = new ExistenciasHome();
 		
 		//Recorre las sucursales
 		for(Sucursales sucursal : sucursalList){
@@ -44,16 +46,23 @@ public class ClienteActualizarExistencia implements Job {
 			
 			if (sucursal.getEs24horas().trim().equals("true")) {				
 				try {
+					System.out.println("Servicio Existencias -> Bodega Actual: " + this.bodegaActual);
 					//Consume el servicio
 					List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
 					for( int i = 0;  i < existenciaList.size(); i++){
 						System.out.println( ""+ i +"- Codigo Bodega: "+ existenciaList.get(i).getId().getBodegaid() + 
 												" Producto id: " + existenciaList.get(i).getId().getProductoid() +
 												" Cantidad:" + existenciaList.get(i).getCantidad());
+						
+						//ubica la bodega actual
+						//coloca las existencias en cero
+						exisHome.existenciaProductoACero(this.bodegaActual);
+						//y actualiza los productos actuales con los valores recibidos del ws
+						//exisHome.actualizarExistneciaProducto(existenciaList.get(i));	
 					}
-					//ubica la bodega actual
-					//coloca las existencias en cero
-					//y actualiza los productos actuales con los valores recibidos del ws
+					
+					
+					
 					
 					
 				} catch (Exception e) {
