@@ -36,7 +36,7 @@ public class ClienteActualizarExistencia implements Job {
 		SucursalesHome sucursalHome = new SucursalesHome();
 		log.info("Obteniendo Sucursales");
 		List<Sucursales> sucursalList = sucursalHome.findAll();
-		System.out.println("Total Sucursales: " + sucursalList.size());
+		System.out.println("Total Sucursales Existencias: " + sucursalList.size());
 		
 		//Recorre las sucursales
 		for(Sucursales sucursal : sucursalList){
@@ -46,7 +46,13 @@ public class ClienteActualizarExistencia implements Job {
 				try {
 					//Consume el servicio
 					List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
-					//ubicar 
+					for( Existencias e : existenciaList){
+						System.out.println("Codigo Bodega: "+ e.getId().getBodegaid() + " Producto id: " + e.getId().getProductoid());
+					}
+					//ubica la bodega actual
+					//coloca las existencias en cero
+					//y actualiza los productos actuales con los valores recibidos del ws
+					
 					
 				} catch (Exception e) {
 					// TODO: handle exception

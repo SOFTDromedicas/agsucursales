@@ -13,11 +13,14 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
+import com.dromedicas.jaxrs.service.ClienteActualizarExistencia;
 import com.dromedicas.jaxrs.service.ClienteVentasAlInstante;
 
 public class QuartzListener implements ServletContextListener {
 
 	Scheduler scheduler = null;
+	Scheduler schedulerExis = null;
+	
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContext) {
@@ -26,15 +29,24 @@ public class QuartzListener implements ServletContextListener {
 		try {
 			// Setup the Job class and the Job group
 			JobDetail job = newJob(ClienteVentasAlInstante.class).withIdentity("VentasAlInstante", "Group").build();
+			JobDetail jobExistencias = newJob(ClienteActualizarExistencia.class).withIdentity("VentasAlInstante", "Group").build();
 
 			Trigger trigger = newTrigger().withIdentity("ActVentasAlInstante", "Group")
 					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/4 * * * ?"))
+					.build();
+			
+			Trigger triggerExistencias = newTrigger().withIdentity("ActVentasAlInstante", "Group")
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/3 * * * ?"))
 					.build();
 			
 			// Setup the Job and Trigger with Scheduler & schedule jobs
 			scheduler = new StdSchedulerFactory().getScheduler();
 			scheduler.start();
 			scheduler.scheduleJob(job, trigger);
+			
+			schedulerExis = new StdSchedulerFactory().getScheduler();
+			schedulerExis.start();
+			schedulerExis.scheduleJob(jobExistencias, triggerExistencias);
 
 		} catch (SchedulerException e) {
 			e.printStackTrace();
@@ -46,6 +58,7 @@ public class QuartzListener implements ServletContextListener {
 		System.out.println("Context Destroyed");
 		try {
 			scheduler.shutdown();
+			schedulerExis.shutdown();
 
 		} catch (SchedulerException e) {
 			e.printStackTrace();
