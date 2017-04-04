@@ -42,7 +42,8 @@ public class ClienteActualizarExistencia implements Job {
 		
 		//Recorre las sucursales
 		for(Sucursales sucursal : sucursalList){
-			log.info("Consume servicio Existencias para la Sucursal: " + sucursal.getDescripcion() );			
+			log.info("Consume servicio Existencias para la Sucursal: " + sucursal.getDescripcion() );	
+			long t1 = System.currentTimeMillis();
 			if (sucursal.getEs24horas().trim().equals("true")) {				
 				try {					
 					//Consume el servicio
@@ -79,7 +80,15 @@ public class ClienteActualizarExistencia implements Job {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	
-			}			
+			}	long t2 = (System.currentTimeMillis() - t1) / 1000;
+            String sec = "";
+            if (t2 > 1 || t2 == 0) {
+                sec = " segundos";
+            } else {
+                sec = " segundo";
+            }
+            
+            log.info( "Tiempo de Ejecucion proceso:" + t2 + sec);		
 		}//fin del for que itera sucursales
 		
 		HibernateSessionFactory.stopSessionFactory();

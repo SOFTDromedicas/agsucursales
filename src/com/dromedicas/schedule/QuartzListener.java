@@ -32,18 +32,18 @@ public class QuartzListener implements ServletContextListener {
 			JobDetail jobExistencias = newJob(ClienteActualizarExistencia.class).withIdentity("Existencias", "ExisGroup").build();
 
 			Trigger trigger = newTrigger().withIdentity("ActVentasAlInstante", "Group")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/10 * * * ?"))
-					.build();
-			
-			Trigger triggerExistencias = newTrigger().withIdentity("ActExistencia", "ExisGroup")
 					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/15 * * * ?"))
 					.build();
 			
-			// Setup the Job and Trigger with Scheduler & schedule jobs
-			scheduler = new StdSchedulerFactory().getScheduler();
-			scheduler.start();
-			scheduler.scheduleJob(job, trigger);
+			Trigger triggerExistencias = newTrigger().withIdentity("ActExistencia", "ExisGroup")
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/70 * * * ?"))
+					.build();
 			
+			// Setup the Job and Trigger with Scheduler & schedule jobs
+//			scheduler = new StdSchedulerFactory().getScheduler();
+//			scheduler.start();
+//			scheduler.scheduleJob(job, trigger);
+//			
 			schedulerExis = new StdSchedulerFactory().getScheduler();
 			schedulerExis.start();
 			schedulerExis.scheduleJob(jobExistencias, triggerExistencias);
