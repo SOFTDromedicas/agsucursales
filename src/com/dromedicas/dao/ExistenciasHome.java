@@ -169,7 +169,7 @@ public class ExistenciasHome extends BaseHibernateDAO {
 	 * @param instance
 	 * @return
 	 */
-	public boolean existenciaProductoACero(Integer bodedgaId) {		
+	public boolean existenciaBodegaoACero(Integer bodedgaId) {		
 		
 		Session session = null;
 		Transaction txt = null;

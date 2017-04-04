@@ -49,22 +49,17 @@ public class ClienteActualizarExistencia implements Job {
 					System.out.println("Servicio Existencias -> Bodega Actual: " + this.bodegaActual);
 					//Consume el servicio
 					List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
+					//ubica la bodega actual
+					//coloca las existencias en cero
+					exisHome.existenciaBodegaoACero(this.bodegaActual);					
 					for( int i = 0;  i < existenciaList.size(); i++){
+						//actualiza los productos actuales con los valores recibidos del ws
+						//exisHome.actualizarExistneciaProducto(existenciaList.get(i));
 						System.out.println( ""+ i +"- Codigo Bodega: "+ existenciaList.get(i).getId().getBodegaid() + 
 												" Producto id: " + existenciaList.get(i).getId().getProductoid() +
-												" Cantidad:" + existenciaList.get(i).getCantidad());
-						
-						//ubica la bodega actual
-						//coloca las existencias en cero
-						exisHome.existenciaProductoACero(this.bodegaActual);
-						//y actualiza los productos actuales con los valores recibidos del ws
-						//exisHome.actualizarExistneciaProducto(existenciaList.get(i));	
-					}
-					
-					
-					
-					
-					
+												" Cantidad:" + existenciaList.get(i).getCantidad());	
+						exisHome.actualizarExistneciaProducto(existenciaList.get(i));
+					}					
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
