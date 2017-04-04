@@ -244,7 +244,7 @@ public class ClienteVentasAlInstante implements Job {
 	 */
 	private void enviarNotificaciones(Sucursales instance) {
 		// busca la ultima actualizacion de la sucursal
-		System.out.println("Ingrese a enviar Notificaciones");
+		log.info("Ingrese a enviar Notificaciones");
 		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
 		try {
 			log.info("Enviando Notificacion");
@@ -263,7 +263,7 @@ public class ClienteVentasAlInstante implements Job {
 				// obteniendo diferencia de dias
 				long diff = fechaActual.getTime() - ultimaActualizacion.getTime();
 				long diferencia = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-				System.out.println("Dias sin actualizar: " + diferencia);
+				log.info("Dias sin actualizar: " + diferencia);
 				
 				if (diferencia > 0) {
 					log.info("Envia SMS por desconexion mayor a un dia");
