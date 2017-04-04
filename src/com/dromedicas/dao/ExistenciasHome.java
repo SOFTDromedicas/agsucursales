@@ -83,10 +83,10 @@ public class ExistenciasHome extends BaseHibernateDAO {
 	}
 
 	public Existencias merge(Existencias detachedInstance) {
-		log.debug("merging Existencias instance");
+		//log.debug("merging Existencias instance");
 		try {
 			Existencias result = (Existencias) this.getSessionFactory().merge(detachedInstance);
-			log.debug("merge successful");
+			//log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
 			log.error("merge failed", re);
@@ -144,7 +144,7 @@ public class ExistenciasHome extends BaseHibernateDAO {
 	 * @return
 	 */
 	public boolean actualizarExistneciaProducto(Existencias instance) {		
-		
+		log.info("Actualizano producto id: " + instance.getId().getProductoid());
 		Session session = null;
 		Transaction txt = null;
 		try {
@@ -173,7 +173,7 @@ public class ExistenciasHome extends BaseHibernateDAO {
 		
 		Session session = null;
 		Transaction txt = null;
-		log.info("Actualizando existencias para la Bodega con id : " + bodedgaId);				
+		log.info("----------------Actualizando existencias a cero para la Bodega con id : " + bodedgaId);				
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();			

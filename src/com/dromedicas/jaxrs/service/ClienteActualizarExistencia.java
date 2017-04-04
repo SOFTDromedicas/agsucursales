@@ -42,62 +42,46 @@ public class ClienteActualizarExistencia implements Job {
 		
 		//Recorre las sucursales
 		for(Sucursales sucursal : sucursalList){
-			System.out.println("Consume servicio Existencias para la Sucursal: " + sucursal.getDescripcion() );
-			
+			System.out.println("Consume servicio Existencias para la Sucursal: " + sucursal.getDescripcion() );			
 			if (sucursal.getEs24horas().trim().equals("true")) {				
 				try {
 					System.out.println("Servicio Existencias -> Bodega Actual: " + this.bodegaActual);
 					//Consume el servicio
 					List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
-					//ubica la bodega actual
-					//coloca las existencias en cero
+					//ubica la bodega actual y coloca las existencias en cero
 					exisHome.existenciaBodegaoACero(this.bodegaActual);					
 					for( int i = 0;  i < existenciaList.size(); i++){
-						//actualiza los productos actuales con los valores recibidos del ws
-						//exisHome.actualizarExistneciaProducto(existenciaList.get(i));
-						System.out.println( ""+ i +"- Codigo Bodega: "+ existenciaList.get(i).getId().getBodegaid() + 
-												" Producto id: " + existenciaList.get(i).getId().getProductoid() +
-												" Cantidad:" + existenciaList.get(i).getCantidad());	
+						//actualiza los productos actuales con los valores recibidos del ws						
 						exisHome.actualizarExistneciaProducto(existenciaList.get(i));
 					}					
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
-				}				
-				
+				}	
 			}else{				
 				try {
 					if(estaAbierta(sucursal) ){
-						
+						System.out.println("Servicio Existencias -> Bodega Actual: " + this.bodegaActual);
 						//Consume el servicio
 						List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
+						//ubica la bodega actual y coloca las existencias en cero
+						exisHome.existenciaBodegaoACero(this.bodegaActual);					
 						for( int i = 0;  i < existenciaList.size(); i++){
-							System.out.println( ""+ i +"- Codigo Bodega: "+ existenciaList.get(i).getId().getBodegaid() + 
-									" Producto id: " + existenciaList.get(i).getId().getProductoid() +
-									" Cantidad:" + existenciaList.get(i).getCantidad());
+							//actualiza los productos actuales con los valores recibidos del ws						
+							exisHome.actualizarExistneciaProducto(existenciaList.get(i));
 						}
-						//ubica la bodega actual
-						//coloca las existencias en cero
-						//y actualiza los productos actuales con los valores recibidos del ws
-						
-						
-					}
+					}	
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	
-				
 			}			
 		}//fin del for que itera sucursales
-		
 		
 		HibernateSessionFactory.stopSessionFactory();
 		sucursalHome = null;		
 		this.bodegaActual = null;
 	}
-	
-	
-	
 	
 	
 	/**
