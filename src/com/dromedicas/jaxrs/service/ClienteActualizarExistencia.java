@@ -37,24 +37,24 @@ public class ClienteActualizarExistencia implements Job {
 		SucursalesHome sucursalHome = new SucursalesHome();
 		log.info("Obteniendo Sucursales");
 		List<Sucursales> sucursalList = sucursalHome.findAll();
-		System.out.println("Total Sucursales Existencias: " + sucursalList.size());
+		log.info("Total Sucursales Existencias: " + sucursalList.size());
 		ExistenciasHome exisHome = new ExistenciasHome();
 		
 		//Recorre las sucursales
 		for(Sucursales sucursal : sucursalList){
-			System.out.println("Consume servicio Existencias para la Sucursal: " + sucursal.getDescripcion() );			
+			log.info("Consume servicio Existencias para la Sucursal: " + sucursal.getDescripcion() );			
 			if (sucursal.getEs24horas().trim().equals("true")) {				
-				try {
-					System.out.println("Servicio Existencias -> Bodega Actual: " + this.bodegaActual);
+				try {					
 					//Consume el servicio
 					List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
+					log.info("Bodega Actual: " + this.bodegaActual);
 					//ubica la bodega actual y coloca las existencias en cero
 					exisHome.existenciaBodegaoACero(this.bodegaActual);					
 					for( int i = 0;  i < existenciaList.size(); i++){
 						//actualiza los productos actuales con los valores recibidos del ws						
-						exisHome.actualizarExistneciaProducto(existenciaList.get(i));
-						log.info("Total de productos actualizados: " + i);
+						exisHome.actualizarExistneciaProducto(existenciaList.get(i));						
 					}					
+					log.info("Total de productos actualizados: " + existenciaList.size());
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
@@ -62,16 +62,17 @@ public class ClienteActualizarExistencia implements Job {
 			}else{				
 				try {
 					if(estaAbierta(sucursal) ){
-						System.out.println("Servicio Existencias -> Bodega Actual: " + this.bodegaActual);
 						//Consume el servicio
 						List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
+						log.info("Bodega Actual: " + this.bodegaActual);
 						//ubica la bodega actual y coloca las existencias en cero
 						exisHome.existenciaBodegaoACero(this.bodegaActual);					
 						for( int i = 0;  i < existenciaList.size(); i++){
 							//actualiza los productos actuales con los valores recibidos del ws						
 							exisHome.actualizarExistneciaProducto(existenciaList.get(i));
-							log.info("Total de productos actualizados: " + i);
+							
 						}
+						log.info("Total de productos actualizados: " + existenciaList.size());
 					}	
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
@@ -108,6 +109,7 @@ public class ClienteActualizarExistencia implements Job {
 			List<ExistenciaActualDetalle> detalle = response.getMessage().getData();
 			if (detalle != null) {
 				if (!detalle.isEmpty()) {
+					//aca se establece la bodega actual
 					this.bodegaActual = Integer.parseInt(detalle.get(0).getBodegaid());
 					//itera los resultado y crea objetos dto para la tabla
 					for (ExistenciaActualDetalle e : detalle) {

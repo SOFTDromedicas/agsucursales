@@ -1,6 +1,7 @@
 package com.dromedicas.dao;
 // Generated 28/03/2017 05:43:09 PM by Hibernate Tools 5.1.2.Final
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.naming.InitialContext;
 import org.apache.commons.logging.Log;
@@ -149,13 +150,16 @@ public class ExistenciasHome extends BaseHibernateDAO {
 		Transaction txt = null;
 		try {
 			session = this.getSession();
-			txt = session.beginTransaction();
-			//this.merge(instance); -- No se usa este metodo para evitar la consulta redundante de la instancia
-			String queryString = "update Existencias e set e.cantidad = " + instance.getCantidad() +
-								" e.ultcambio = " + instance.getUltcambio() +
-								" where e.bodegaid = " + instance.getId().getBodegaid() + 
-								" e.productoid = " + instance.getId().getProductoid(); 
-			Query queryObject = this.sessionFactory.createQuery(queryString);
+			txt = session.beginTransaction();			
+			//this.merge(instance); //--> No se usa este metodo para evitar la consulta redundante de la instancia
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String queryString = "update existencias2 set existencias2.cantidad = " + instance.getCantidad() + 
+					", existencias2.ultcambio = '" + sdf.format(instance.getUltcambio()) + "' where " +
+					" existencias2.bodegaid = " + instance.getId().getBodegaid() + " and existencias2.productoid = " +
+					instance.getId().getProductoid() ;
+			
+			//System.out.println(queryString);
+			Query queryObject = this.sessionFactory.createSQLQuery(queryString);
 			txt.commit();
 		} catch (HibernateException e) {
 			txt.rollback();
@@ -178,7 +182,7 @@ public class ExistenciasHome extends BaseHibernateDAO {
 		
 		Session session = null;
 		Transaction txt = null;
-		log.info("----------------Actualizando existencias a cero para la Bodega con id : " + bodedgaId);				
+		log.info("--Actualizando existencias a cero para la Bodega con id : " + bodedgaId);				
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();			
