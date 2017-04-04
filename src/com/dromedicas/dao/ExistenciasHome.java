@@ -150,6 +150,7 @@ public class ExistenciasHome extends BaseHibernateDAO {
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();
+			//this.merge(instance); -- No se usa este metodo para evitar la consulta redundante de la instancia
 			String queryString = "update Existencias e set e.cantidad = " + instance.getCantidad() +
 								" e.ultcambio = " + instance.getUltcambio() +
 								" where e.bodegaid = " + instance.getId().getBodegaid() + 
