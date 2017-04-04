@@ -53,6 +53,7 @@ public class ClienteActualizarExistencia implements Job {
 					for( int i = 0;  i < existenciaList.size(); i++){
 						//actualiza los productos actuales con los valores recibidos del ws						
 						exisHome.actualizarExistneciaProducto(existenciaList.get(i));
+						log.info("Total de productos actualizados: " + i);
 					}					
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -69,6 +70,7 @@ public class ClienteActualizarExistencia implements Job {
 						for( int i = 0;  i < existenciaList.size(); i++){
 							//actualiza los productos actuales con los valores recibidos del ws						
 							exisHome.actualizarExistneciaProducto(existenciaList.get(i));
+							log.info("Total de productos actualizados: " + i);
 						}
 					}	
 				} catch (ParseException e) {

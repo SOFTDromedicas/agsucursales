@@ -144,13 +144,17 @@ public class ExistenciasHome extends BaseHibernateDAO {
 	 * @return
 	 */
 	public boolean actualizarExistneciaProducto(Existencias instance) {		
-		log.info("Actualizano producto id: " + instance.getId().getProductoid());
+		//log.info("Actualizano producto id: " + instance.getId().getProductoid());
 		Session session = null;
 		Transaction txt = null;
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();
-			this.merge(instance);
+			String queryString = "update Existencias e set e.cantidad = " + instance.getCantidad() +
+								" e.ultcambio = " + instance.getUltcambio() +
+								" where e.bodegaid = " + instance.getId().getBodegaid() + 
+								" e.productoid = " + instance.getId().getProductoid(); 
+			Query queryObject = this.sessionFactory.createQuery(queryString);
 			txt.commit();
 		} catch (HibernateException e) {
 			txt.rollback();
