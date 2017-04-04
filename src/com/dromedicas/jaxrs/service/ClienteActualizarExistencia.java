@@ -50,9 +50,9 @@ public class ClienteActualizarExistencia implements Job {
 					log.info("Bodega Actual: " + this.bodegaActual);
 					//ubica la bodega actual y coloca las existencias en cero
 					exisHome.existenciaBodegaoACero(this.bodegaActual);					
-					for( int i = 0;  i < existenciaList.size(); i++){
+					for(Existencias exisProducto: existenciaList){
 						//actualiza los productos actuales con los valores recibidos del ws						
-						exisHome.actualizarExistneciaProducto(existenciaList.get(i));						
+						exisHome.actualizarExistneciaProducto(exisProducto);						
 					}					
 					log.info("Total de productos actualizados: " + existenciaList.size());
 				} catch (Exception e) {
@@ -67,11 +67,10 @@ public class ClienteActualizarExistencia implements Job {
 						log.info("Bodega Actual: " + this.bodegaActual);
 						//ubica la bodega actual y coloca las existencias en cero
 						exisHome.existenciaBodegaoACero(this.bodegaActual);					
-						for( int i = 0;  i < existenciaList.size(); i++){
+						for(Existencias exisProducto: existenciaList){
 							//actualiza los productos actuales con los valores recibidos del ws						
-							exisHome.actualizarExistneciaProducto(existenciaList.get(i));
-							
-						}
+							exisHome.actualizarExistneciaProducto(exisProducto);						
+						}	
 						log.info("Total de productos actualizados: " + existenciaList.size());
 					}	
 				} catch (ParseException e) {
@@ -96,9 +95,10 @@ public class ClienteActualizarExistencia implements Job {
 	 * @return
 	 */
 	private List<Existencias> obtenertWSExistencia( Sucursales sucursal ){
+		//Lista con los prodctos con las existencias recibidas del ws
 		List<Existencias> existenciasList = new ArrayList<Existencias>();
 		//cliente Jersey- consume el WS
-		System.out.println("Servicio Existencias: " + sucursal.getDescripcion() + " | " + sucursal.getRutaweb() + this.servicio);
+		log.info("Servicio Existencias: " + sucursal.getDescripcion() + " | " + sucursal.getRutaweb() + this.servicio);
 		
 		Client client = Client.create();
 		WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicio);
@@ -140,7 +140,7 @@ public class ClienteActualizarExistencia implements Job {
 	
 	
 	/**
-	 * Valida si la sucursal actual se encuentra abierte con base en el horario
+	 * Valida si la sucursal actual se encuentra abierta con base en el horario
 	 * de la misma. Recibe como parametro un objeto <code>Sucursales</code>. Ver
 	 * mas informacion en la clase {@link com.dromedicas.dto.Sucursales}
 	 * 
