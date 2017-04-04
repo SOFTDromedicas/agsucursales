@@ -49,7 +49,8 @@ public class ClienteActualizarExistencia implements Job {
 					List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
 					log.info("Bodega Actual: " + this.bodegaActual);
 					//ubica la bodega actual y coloca las existencias en cero
-					exisHome.existenciaBodegaoACero(this.bodegaActual);					
+					exisHome.existenciaBodegaoACero(this.bodegaActual);	
+					log.info("Actualizando existencias de productos");
 					for(Existencias exisProducto: existenciaList){
 						//actualiza los productos actuales con los valores recibidos del ws						
 						exisHome.actualizarExistneciaProducto(exisProducto);						
@@ -66,7 +67,8 @@ public class ClienteActualizarExistencia implements Job {
 						List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
 						log.info("Bodega Actual: " + this.bodegaActual);
 						//ubica la bodega actual y coloca las existencias en cero
-						exisHome.existenciaBodegaoACero(this.bodegaActual);					
+						exisHome.existenciaBodegaoACero(this.bodegaActual);		
+						log.info("Actualizando existencias de productos");
 						for(Existencias exisProducto: existenciaList){
 							//actualiza los productos actuales con los valores recibidos del ws						
 							exisHome.actualizarExistneciaProducto(exisProducto);						
