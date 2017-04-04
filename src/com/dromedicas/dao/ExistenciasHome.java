@@ -160,6 +160,8 @@ public class ExistenciasHome extends BaseHibernateDAO {
 			
 			//System.out.println(queryString);
 			Query queryObject = this.sessionFactory.createSQLQuery(queryString);
+			queryObject.executeUpdate();
+			
 			txt.commit();
 		} catch (HibernateException e) {
 			txt.rollback();

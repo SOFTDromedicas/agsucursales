@@ -36,13 +36,13 @@ public class QuartzListener implements ServletContextListener {
 					.build();
 			
 			Trigger triggerExistencias = newTrigger().withIdentity("ActExistencia", "ExisGroup")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/15 * * * ?"))
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ?"))
 					.build();
 			
 			// Setup the Job and Trigger with Scheduler & schedule jobs
-			scheduler = new StdSchedulerFactory().getScheduler();
-			scheduler.start();
-			scheduler.scheduleJob(job, trigger);
+//			scheduler = new StdSchedulerFactory().getScheduler();
+//			scheduler.start();
+//			scheduler.scheduleJob(job, trigger);
 			
 			schedulerExis = new StdSchedulerFactory().getScheduler();
 			schedulerExis.start();

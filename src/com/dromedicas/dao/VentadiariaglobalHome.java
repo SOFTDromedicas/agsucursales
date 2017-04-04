@@ -38,10 +38,10 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 	}
 
 	public void persist(Ventadiariaglobal transientInstance) {
-		log.debug("persisting Ventadiariaglobal instance");
+		//log.debug("persisting Ventadiariaglobal instance");
 		try {
 			this.getSessionFactory().persist(transientInstance);
-			log.debug("persist successful");
+			//log.debug("persist successful");
 		} catch (RuntimeException re) {
 			log.error("persist failed", re);
 			throw re;
@@ -71,10 +71,10 @@ public class VentadiariaglobalHome extends BaseHibernateDAO {
 	}
 
 	public void delete(Ventadiariaglobal persistentInstance) {
-		log.debug("deleting Ventadiariaglobal instance");
+		//log.debug("deleting Ventadiariaglobal instance");
 		try {
 			this.getSessionFactory().delete(persistentInstance);
-			log.debug("delete successful");
+			//log.debug("delete successful");
 		} catch (RuntimeException re) {
 			log.error("delete failed", re);
 			throw re;
