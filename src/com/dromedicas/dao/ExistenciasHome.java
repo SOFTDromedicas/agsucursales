@@ -156,8 +156,7 @@ public class ExistenciasHome extends BaseHibernateDAO {
 			String queryString = "update existencias2 set existencias2.cantidad = " + instance.getCantidad() + 
 					", existencias2.ultcambio = '" + sdf.format(instance.getUltcambio()) + "' where " +
 					" existencias2.bodegaid = " + instance.getId().getBodegaid() + " and existencias2.productoid = " +
-					instance.getId().getProductoid() ;
-			
+					instance.getId().getProductoid() ;			
 			//System.out.println(queryString);
 			Query queryObject = this.sessionFactory.createSQLQuery(queryString);
 			int x = queryObject.executeUpdate();	

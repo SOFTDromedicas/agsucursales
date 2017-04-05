@@ -39,7 +39,7 @@ public class ClienteActualizarExistencia implements Job {
 		List<Sucursales> sucursalList = sucursalHome.findAll();
 		log.info("Total Sucursales Existencias: " + sucursalList.size());
 		ExistenciasHome exisHome = new ExistenciasHome();
-		
+		long tInicio = System.currentTimeMillis();
 		//Recorre las sucursales
 		for(Sucursales sucursal : sucursalList){
 			log.info("Consume servicio Existencias para la Sucursal: " + sucursal.getDescripcion() );	
@@ -80,7 +80,8 @@ public class ClienteActualizarExistencia implements Job {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	
-			}	long t2 = (System.currentTimeMillis() - t1) / 1000;
+			}	
+			long t2 = (System.currentTimeMillis() - t1) / 1000;
             String sec = "";
             if (t2 > 1 || t2 == 0) {
                 sec = " segundos";
@@ -90,6 +91,9 @@ public class ClienteActualizarExistencia implements Job {
             
             log.info( "Tiempo de Ejecucion proceso:" + t2 + sec);		
 		}//fin del for que itera sucursales
+		
+		long tFinal = (System.currentTimeMillis() - tInicio) / 1000;
+        log.info(">>>>****Tiempo Total del proceso: " + (tFinal/60) + " minutos");
 		
 		HibernateSessionFactory.stopSessionFactory();
 		sucursalHome = null;		

@@ -47,7 +47,6 @@ public class ClienteVentasAlInstante implements Job {
 
 		// Itera Todas las sucursales
 		for (Sucursales sucursal : sucursalList) {
-			System.out.println(sucursal.getEs24horas().trim().equals("true"));
 			// Revisa si la sucursal es 24 horas
 			if (sucursal.getEs24horas().trim().equals("true")) {
 				try {
