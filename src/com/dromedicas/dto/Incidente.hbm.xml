@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 5/04/2017 03:19:04 PM by Hibernate Tools 5.1.2.Final -->
+<hibernate-mapping>
+    <class name="com.dromedicas.dto.Incidente" table="incidente" catalog="droposservidordb" optimistic-lock="version">
+        <id name="idincidente" type="java.lang.Integer">
+            <column name="idincidente" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tipoincidente" class="com.dromedicas.dto.Tipoincidente" fetch="select">
+            <column name="idtipoincidente" not-null="true" />
+        </many-to-one>
+        <property name="cliente" type="string">
+            <column name="cliente" length="45" not-null="true" />
+        </property>
+        <property name="ocurrencia" type="timestamp">
+            <column name="ocurrencia" length="0" />
+        </property>
+        <property name="cierre" type="timestamp">
+            <column name="cierre" length="0" />
+        </property>
+        <set name="notificacions" table="notificacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idincidente" not-null="true" />
+            </key>
+            <one-to-many class="com.dromedicas.dto.Notificacion" />
+        </set>
+    </class>
+</hibernate-mapping>

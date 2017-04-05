@@ -17,5 +17,9 @@
         <mapping resource="com/dromedicas/dto/Ventadiariaglobal.hbm.xml" />
         <mapping resource="com/dromedicas/dto/Existencias.hbm.xml" />
         <mapping resource="com/dromedicas/dto/Bodegas.hbm.xml" />
+        <mapping resource="com/dromedicas/dto/Notificacion.hbm.xml" />
+        <mapping resource="com/dromedicas/dto/Tipoincidente.hbm.xml" />
+        <mapping resource="com/dromedicas/dto/Tiponotificacion.hbm.xml" />
+        <mapping resource="com/dromedicas/dto/Incidente.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

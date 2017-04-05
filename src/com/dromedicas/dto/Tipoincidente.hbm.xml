@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 5/04/2017 03:19:04 PM by Hibernate Tools 5.1.2.Final -->
+<hibernate-mapping>
+    <class name="com.dromedicas.dto.Tipoincidente" table="tipoincidente" catalog="droposservidordb" optimistic-lock="version">
+        <id name="idtipoincidente" type="java.lang.Integer">
+            <column name="idtipoincidente" />
+            <generator class="identity" />
+        </id>
+        <property name="nombreincidente" type="string">
+            <column name="nombreincidente" length="45" not-null="true" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="45">
+                <comment>Detalle del tipo del tipo de incidente</comment>
+            </column>
+        </property>
+        <property name="horasintervalo" type="double">
+            <column name="horasintervalo" precision="22" scale="0" not-null="true" />
+        </property>
+        <set name="incidentes" table="incidente" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idtipoincidente" not-null="true" />
+            </key>
+            <one-to-many class="com.dromedicas.dto.Incidente" />
+        </set>
+    </class>
+</hibernate-mapping>

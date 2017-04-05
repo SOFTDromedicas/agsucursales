@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 5/04/2017 03:19:04 PM by Hibernate Tools 5.1.2.Final -->
+<hibernate-mapping>
+    <class name="com.dromedicas.dto.Notificacion" table="notificacion" catalog="droposservidordb" optimistic-lock="version">
+        <id name="idnotificacion" type="java.lang.Integer">
+            <column name="idnotificacion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="incidente" class="com.dromedicas.dto.Incidente" fetch="select">
+            <column name="idincidente" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tiponotificacion" class="com.dromedicas.dto.Tiponotificacion" fetch="select">
+            <column name="idtiponotificacion" not-null="true" />
+        </many-to-one>
+        <property name="momento" type="timestamp">
+            <column name="momento" length="0" />
+        </property>
+    </class>
+</hibernate-mapping>
