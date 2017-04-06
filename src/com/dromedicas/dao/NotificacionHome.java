@@ -163,7 +163,7 @@ public class NotificacionHome extends BaseHibernateDAO{
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();
-			String queryString ="from Notificacion nu where nu.idnotificacion in( select n.idnotificacion " + 
+			String queryString ="from Notificacion nu where nu.idnotificacion in( select max(n.idnotificacion) " + 
 							"from Notificacion n where n.incidente.idincidente  = "+incidente .getIdincidente()+
 							" and n.tiponotificacion.descripcion = 'Envio Email')";		
 			
@@ -188,7 +188,7 @@ public class NotificacionHome extends BaseHibernateDAO{
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();
-			String queryString ="from Notificacion nu where nu.idnotificacion in( select n.idnotificacion " + 
+			String queryString ="from Notificacion nu where nu.idnotificacion in( select max(n.idnotificacion) " + 
 							"from Notificacion n where n.incidente.idincidente  = "+incidente .getIdincidente()+
 							" and n.tiponotificacion.descripcion = 'Envio SMS')";		
 			

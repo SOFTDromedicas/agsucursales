@@ -279,19 +279,6 @@ public class ClienteVentasAlInstante implements Job {
 	}
 	
 	
-	/**
-	 * Envia una notificacion SMS sobre el proceso de Ventas al Instante
-	 * con la informacion recibida como parametro
-	 * @param instance
-	 */
-	private void notificarSMS(String sucursal, long diferencia, Date ultimaActualizacion) {
-		String nroCel = "3102097474";
-
-		EnviarSms.enviarSms(
-				"Mensaje desde DROPOS. La sucursal " + sucursal + " no actualiza Ventas al instante desde hace "
-						+ diferencia + " dia(s)." + " Ultima Actualizacion  " + ultimaActualizacion,
-				nroCel);
-	}
 	
 	
 	

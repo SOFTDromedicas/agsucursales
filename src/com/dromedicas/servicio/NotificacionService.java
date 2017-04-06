@@ -46,10 +46,30 @@ public class NotificacionService {
 				List<Notificacion> notificacionList = notiHome.obtenerNotificacionPorIncidente(incidente);
 				if( !notificacionList.isEmpty() ){
 					
+					Notificacion email = notiHome.obtenerUltimaNotiEmail(incidente);
+					
 					//obtener la ultima notificacion Email
+					if(email != null){
+						double interEmail = (email.getTiponotificacion().getIntervalo()*100);
+						//determino si el tiempo transcurrido desde su envio al 
+						//momento actual es >= al intervalo en tiponotificacion
+						int diferencia = obetenerDiferenciaTiempos("minutos", email.getMomento(), ahora);
+						if(diferencia >= interEmail){
+							//envia nuevo email
+						}
+					}
 					
-					//obtener la ultima 
-					
+					Notificacion sms = notiHome.obtenerUltimaNotiSMS(incidente);
+					//obtener la ultima notificacion por SMS
+					if(sms != null){
+						double interSms = (sms.getTiponotificacion().getIntervalo()*100);
+						//determino si el tiempo transcurrido desde su envio al 
+						//momento actual es >= al intervalo en tiponotificacion
+						int diferencia = obetenerDiferenciaTiempos("minutos", sms.getMomento(), ahora);
+						if(diferencia >= interSms){
+							//envia nuevo email
+						}
+					}
 				}else{
 					
 					//envia la notificacion con base en el timpo en el valor de intervalo
@@ -88,5 +108,25 @@ public class NotificacionService {
 		}
 		return intervalo;
 	}
+	
+	
+	public void enviarEmail(){}
+	
+	
+	
+	/**
+	 * Envia una notificacion SMS sobre el proceso de Ventas al Instante
+	 * con la informacion recibida como parametro
+	 * @param instance
+	 */
+	private void notificarSMS(String sucursal, long diferencia, Date ultimaActualizacion) {
+		String nroCel = "3102097474";
+
+		EnviarSms.enviarSms(
+				"Mensaje desde DROPOS. La sucursal " + sucursal + " no actualiza Ventas al instante desde hace "
+						+ diferencia + " dia(s)." + " Ultima Actualizacion  " + ultimaActualizacion,
+				nroCel);
+	}
+	
 
 }
