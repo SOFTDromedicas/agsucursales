@@ -191,7 +191,7 @@ public class ExistenciasHome extends BaseHibernateDAO {
 			String queryString = 
 					"update Existencias e set e.cantidad = 0 where e.id.bodegaid = " + bodedgaId;
 			Query queryObject = this.sessionFactory.createQuery(queryString);
-			//ventaDto = (Ventadiariaglobal) queryObject.uniqueResult();
+			queryObject.executeUpdate();
 			txt.commit();
 		} catch (HibernateException e) {
 			txt.rollback();

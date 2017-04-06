@@ -1,14 +1,21 @@
 package com.dromedicas.dao;
 // Generated 5/04/2017 03:19:04 PM by Hibernate Tools 5.1.2.Final
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.naming.InitialContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionBuilder;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 
+import com.dromedicas.dto.Incidente;
 import com.dromedicas.dto.Notificacion;
 
 /**
@@ -16,25 +23,26 @@ import com.dromedicas.dto.Notificacion;
  * @see com.dromedicas.dto.Notificacion
  * @author Hibernate Tools
  */
-public class NotificacionHome {
+public class NotificacionHome extends BaseHibernateDAO{
 
 	private static final Log log = LogFactory.getLog(NotificacionHome.class);
 
-	private final SessionFactory sessionFactory = getSessionFactory();
+	private final Session sessionFactory = super.getSession();
 
-	protected SessionFactory getSessionFactory() {
+	protected Session getSessionFactory() {
 		try {
-			return (SessionFactory) new InitialContext().lookup("SessionFactory");
+			return this.sessionFactory;
 		} catch (Exception e) {
 			log.error("Could not locate SessionFactory in JNDI", e);
-			throw new IllegalStateException("Could not locate SessionFactory in JNDI");
+			throw new IllegalStateException(
+					"Could not locate SessionFactory in JNDI");
 		}
 	}
 
 	public void persist(Notificacion transientInstance) {
 		log.debug("persisting Notificacion instance");
 		try {
-			sessionFactory.getCurrentSession().persist(transientInstance);
+			getSessionFactory().persist(transientInstance);
 			log.debug("persist successful");
 		} catch (RuntimeException re) {
 			log.error("persist failed", re);
@@ -45,7 +53,7 @@ public class NotificacionHome {
 	public void attachDirty(Notificacion instance) {
 		log.debug("attaching dirty Notificacion instance");
 		try {
-			sessionFactory.getCurrentSession().saveOrUpdate(instance);
+			getSessionFactory().saveOrUpdate(instance);
 			log.debug("attach successful");
 		} catch (RuntimeException re) {
 			log.error("attach failed", re);
@@ -56,7 +64,7 @@ public class NotificacionHome {
 	public void attachClean(Notificacion instance) {
 		log.debug("attaching clean Notificacion instance");
 		try {
-			sessionFactory.getCurrentSession().lock(instance, LockMode.NONE);
+			getSessionFactory().lock(instance, LockMode.NONE);
 			log.debug("attach successful");
 		} catch (RuntimeException re) {
 			log.error("attach failed", re);
@@ -67,7 +75,7 @@ public class NotificacionHome {
 	public void delete(Notificacion persistentInstance) {
 		log.debug("deleting Notificacion instance");
 		try {
-			sessionFactory.getCurrentSession().delete(persistentInstance);
+			getSessionFactory().delete(persistentInstance);
 			log.debug("delete successful");
 		} catch (RuntimeException re) {
 			log.error("delete failed", re);
@@ -78,7 +86,7 @@ public class NotificacionHome {
 	public Notificacion merge(Notificacion detachedInstance) {
 		log.debug("merging Notificacion instance");
 		try {
-			Notificacion result = (Notificacion) sessionFactory.getCurrentSession().merge(detachedInstance);
+			Notificacion result = (Notificacion) getSessionFactory().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -90,7 +98,7 @@ public class NotificacionHome {
 	public Notificacion findById(java.lang.Integer id) {
 		log.debug("getting Notificacion instance with id: " + id);
 		try {
-			Notificacion instance = (Notificacion) sessionFactory.getCurrentSession()
+			Notificacion instance = (Notificacion) getSessionFactory()
 					.get("com.dromedicas.dto.Notificacion", id);
 			if (instance == null) {
 				log.debug("get successful, no instance found");
@@ -107,7 +115,7 @@ public class NotificacionHome {
 	public List findByExample(Notificacion instance) {
 		log.debug("finding Notificacion instance by example");
 		try {
-			List results = sessionFactory.getCurrentSession().createCriteria("com.dromedicas.dto.Notificacion")
+			List results = getSessionFactory().createCriteria("com.dromedicas.dto.Notificacion")
 					.add(Example.create(instance)).list();
 			log.debug("find by example successful, result size: " + results.size());
 			return results;
@@ -116,4 +124,87 @@ public class NotificacionHome {
 			throw re;
 		}
 	}
+	
+	/**
+	 * Busca si exc
+	 * @param incidente
+	 * @return
+	 */
+	public List obtenerNotificacionPorIncidente(Incidente incidente){
+		Session session = null;
+		Transaction txt = null;
+		List<Notificacion> notiDTO = new ArrayList<Notificacion>();
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();
+			String queryString ="from Notificacion n where n.incidente.idincidente  = " 
+																+ incidente.getIdincidente();			
+			Query queryObject = this.sessionFactory.createQuery(queryString);
+			notiDTO = queryObject.list();
+			txt.commit();
+			
+		} catch (Exception e) {
+			txt.rollback();
+			e.printStackTrace();
+		}
+		finally {
+			//session.close();
+		}
+		return notiDTO;	
+		
+	}
+	
+	
+	
+	public Notificacion obtenerUltimaNotiEmail(Incidente incidente){
+		Session session = null;
+		Transaction txt = null;
+		Notificacion notiDTO = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();
+			String queryString ="from Notificacion nu where nu.idnotificacion in( select n.idnotificacion " + 
+							"from Notificacion n where n.incidente.idincidente  = "+incidente .getIdincidente()+
+							" and n.tiponotificacion.descripcion = 'Envio Email')";		
+			
+			Query queryObject = this.sessionFactory.createQuery(queryString);
+			notiDTO = (Notificacion) queryObject.uniqueResult();
+			txt.commit();
+			
+		} catch (Exception e) {
+			txt.rollback();
+			e.printStackTrace();
+		}
+		finally {
+			//session.close();
+		}
+		return notiDTO;
+	}
+	
+	public Notificacion obtenerUltimaNotiSMS(Incidente incidente){
+		Session session = null;
+		Transaction txt = null;
+		Notificacion notiDTO = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();
+			String queryString ="from Notificacion nu where nu.idnotificacion in( select n.idnotificacion " + 
+							"from Notificacion n where n.incidente.idincidente  = "+incidente .getIdincidente()+
+							" and n.tiponotificacion.descripcion = 'Envio SMS')";		
+			
+			Query queryObject = this.sessionFactory.createQuery(queryString);
+			notiDTO = (Notificacion) queryObject.uniqueResult();
+			txt.commit();
+			
+		} catch (Exception e) {
+			txt.rollback();
+			e.printStackTrace();
+		}
+		finally {
+			//session.close();
+		}
+		return notiDTO;
+	}
+	
+	
 }
