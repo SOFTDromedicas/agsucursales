@@ -7,7 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 public class EnviarSms {
-
+	/**
+	 * Envia un mensaje SMS al numero y con el contenido recibidos
+	 * como mensajes como parametros
+	 * @param mensaje
+	 * @param numero
+	 * @return
+	 */
 	public static String enviarSms(String mensaje, String numero) {
 		String respuesta = "";
 		try {

@@ -137,9 +137,10 @@ public class IncidenteHome extends BaseHibernateDAO{
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();			
-			String queryString = "from Incidente i where i.tipoincidente.descripcion = '"+ incidente
+			String queryString = "from Incidente i where i.tipoincidente.nombreincidente = '"+ incidente
 			+"' and i.cliente = '"+ cliente +"' and i.cierre is null ";
 			Query queryObject = this.sessionFactory.createQuery(queryString);
+			System.out.println("*************** Query String"+queryObject.getQueryString());
 			incidenteDTO = (Incidente) queryObject.uniqueResult();
 			txt.commit();
 		} catch (HibernateException e) {

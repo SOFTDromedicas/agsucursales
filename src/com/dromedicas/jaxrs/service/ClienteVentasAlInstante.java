@@ -78,7 +78,8 @@ public class ClienteVentasAlInstante implements Job {
 							ventaDiaraHome.guardarVentaDiaraGlobal(e);
 						}
 					}
-
+					//aca se debe validar si hay incidentes abiertos para el cliente actual y cerrarlos
+					
 				} catch (Exception e) {
 					//Manejo de error en la consulta del ws
 					enviarNotificaciones(sucursal);
@@ -86,7 +87,6 @@ public class ClienteVentasAlInstante implements Job {
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
 				}
-
 			} else {
 				// revisa si la hora actual esta entre la hora de apertura y cierre +1
 				try {
@@ -115,6 +115,7 @@ public class ClienteVentasAlInstante implements Job {
 								ventaDiaraHome.guardarVentaDiaraGlobal(e);
 							}
 						}
+						//aca se debe validar si hay incidentes abiertos para el cliente actual y cerrarlos
 					}
 				} catch (Exception e) {
 					enviarNotificaciones(sucursal);
@@ -251,10 +252,10 @@ public class ClienteVentasAlInstante implements Job {
 		String incidente = "Falla Ventas Al Instante";
 		Incidente inci = null;
 		try{
-			
+			//busca si el incidente esta creado
 			NotificacionService notificacion = new NotificacionService();
 			inci = notificacion.existeIncidente(instance.getDescripcion(), incidente );
-			
+			System.out.println("-----------Incidente es null:" + inci == null);
 			if( inci !=  null){				
 				notificacion.enviarNotificacion(inci, instance);				
 			}else{

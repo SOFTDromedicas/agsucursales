@@ -56,6 +56,7 @@ public class NotificacionService {
 						int diferencia = obetenerDiferenciaTiempos("minutos", email.getMomento(), ahora);
 						if(diferencia >= interEmail){
 							//envia nuevo email
+							this.enviarEmail(sucursal, incidente.getOcurrencia());
 						}
 					}
 					
@@ -67,13 +68,15 @@ public class NotificacionService {
 						//momento actual es >= al intervalo en tiponotificacion
 						int diferencia = obetenerDiferenciaTiempos("minutos", sms.getMomento(), ahora);
 						if(diferencia >= interSms){
-							//envia nuevo email
+							//envia nuevo sms
+							this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
+												incidente.getTipoincidente().getNombreincidente());
 						}
 					}
 				}else{
 					
 					//envia la notificacion con base en el timpo en el valor de intervalo
-					
+					this.enviarEmail(sucursal, incidente.getOcurrencia());
 				}
 			}
 			
@@ -110,7 +113,9 @@ public class NotificacionService {
 	}
 	
 	
-	public void enviarEmail(){}
+	public void enviarEmail(Sucursales sucursal, Date ocurrencia){
+		EnviarMailAlertas.enviarEmailAlertaVentas(sucursal, ocurrencia);
+	}
 	
 	
 	
@@ -119,13 +124,17 @@ public class NotificacionService {
 	 * con la informacion recibida como parametro
 	 * @param instance
 	 */
-	private void notificarSMS(String sucursal, long diferencia, Date ultimaActualizacion) {
-		String nroCel = "3102097474";
-
-		EnviarSms.enviarSms(
-				"Mensaje desde DROPOS. La sucursal " + sucursal + " no actualiza Ventas al instante desde hace "
-						+ diferencia + " dia(s)." + " Ultima Actualizacion  " + ultimaActualizacion,
-				nroCel);
+	private void enviarSMS(String sucursal, Date ultimaActualizacion, String tipoIncidente) {
+		String nrosCel[] = {"3102097474", "3002692042"};
+		
+		String mensaje = "Informacion Importante desde  DROPOS. La sucursal " + sucursal + 
+				" no actualiza "+ tipoIncidente +" desde  " + ultimaActualizacion ;
+		for (String nro : nrosCel){
+			
+			EnviarSms.enviarSms(mensaje , nro);
+		}
+		
+		
 	}
 	
 
