@@ -16,11 +16,15 @@ import org.quartz.JobExecutionException;
 
 import com.dromedicas.dao.HibernateSessionFactory;
 import com.dromedicas.dao.SucursalesHome;
+import com.dromedicas.dao.TipoincidenteHome;
 import com.dromedicas.dao.VentadiariaglobalHome;
+import com.dromedicas.dto.Incidente;
 import com.dromedicas.dto.Sucursales;
+import com.dromedicas.dto.Tipoincidente;
 import com.dromedicas.dto.Ventadiariaglobal;
 import com.dromedicas.servicio.EnviarMailAlertas;
 import com.dromedicas.servicio.EnviarSms;
+import com.dromedicas.servicio.NotificacionService;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -78,7 +82,7 @@ public class ClienteVentasAlInstante implements Job {
 				} catch (Exception e) {
 					//Manejo de error en la consulta del ws
 					enviarNotificaciones(sucursal);
-					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
+					log.info("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
 				}
@@ -244,50 +248,34 @@ public class ClienteVentasAlInstante implements Job {
 	private void enviarNotificaciones(Sucursales instance) {
 		// busca la ultima actualizacion de la sucursal
 		log.info("Ingrese a enviar Notificaciones");
-		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
-		try {
-			log.info("Enviando Notificacion");
-
-			Date fechaActual = new Date();
-			Date ultimaActualizacion = ventaDiaraHome.ultimaActualizacion(instance.getCodigo())
-								.getUltactualizacion();
-
-			if (ultimaActualizacion != null) {
-				Calendar calFechaAct = Calendar.getInstance();
-				calFechaAct.setTime(fechaActual);
-
-				Calendar calUltAct = Calendar.getInstance();
-				calUltAct.setTime(ultimaActualizacion);
-
-				// obteniendo diferencia de dias
-				long diff = fechaActual.getTime() - ultimaActualizacion.getTime();
-				long diferencia = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-				log.info("Dias sin actualizar: " + diferencia);
+		String incidente = "Falla Ventas Al Instante";
+		Incidente inci = null;
+		try{
+			
+			NotificacionService notificacion = new NotificacionService();
+			inci = notificacion.existeIncidente(instance.getDescripcion(), incidente );
+			
+			if( inci !=  null){				
+				notificacion.enviarNotificacion(inci, instance);				
+			}else{
+				//crea un nuevo incidente
+				TipoincidenteHome tipoInHome = new TipoincidenteHome();
+				//obtiene el tipo de incidente
+				Tipoincidente tipoIncidente = tipoInHome.obtenerTipoIncidente(incidente);
 				
-				if (diferencia > 0) {
-					log.info("Envia SMS por desconexion mayor a un dia");
-					//notificarSMS(instance.getDescripcion(), diferencia, ultimaActualizacion);
-					
-				}else{
-					int difHoras = calFechaAct.get(Calendar.HOUR) - calUltAct.get(Calendar.HOUR) ;
-					int difMinutes = calFechaAct.get(Calendar.MINUTE) - calUltAct.get(Calendar.MINUTE);					
-					if( difMinutes > 10 ){
-						System.out.println("Ingrese a enviar  Email");
-						//notificarFallaEmail(instance, ultimaActualizacion);
-					}
-				}
+				Incidente nuevoIncidente = new Incidente();
+				nuevoIncidente.setTipoincidente( tipoIncidente);
+				nuevoIncidente.setCliente(instance.getDescripcion());
+				nuevoIncidente.setOcurrencia(new Date());
+				//registra el nuevo incidente
+				notificacion.registrarIncidente(nuevoIncidente);				
 			}
+			
+			
 		} catch (Exception e) {
 			log.error("Error al obtener la ultima actualizacion" + e.getMessage());
 		}
 
-	}
-	
-	
-	
-	private void notificarFallaEmail(Sucursales instance, Date ultActualizacion){
-		EnviarMailAlertas.enviarEmailAlertaVentas(instance,ultActualizacion);
-		
 	}
 	
 	
@@ -304,6 +292,9 @@ public class ClienteVentasAlInstante implements Job {
 						+ diferencia + " dia(s)." + " Ultima Actualizacion  " + ultimaActualizacion,
 				nroCel);
 	}
+	
+	
+	
 	
 
 }
