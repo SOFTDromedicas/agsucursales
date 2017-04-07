@@ -79,7 +79,7 @@ public class ClienteVentasAlInstante implements Job {
 						}
 					}
 					//aca se debe validar si hay incidentes abiertos para el cliente actual y cerrarlos
-					cerrarIncidentes(sucursal);
+					//cerrarIncidentes(sucursal);
 				} catch (Exception e) {
 					//Manejo de error en la consulta del ws
 					enviarNotificaciones(sucursal);
@@ -116,10 +116,10 @@ public class ClienteVentasAlInstante implements Job {
 							}
 						}
 						//aca se debe validar si hay incidentes abiertos para el cliente actual y cerrarlos
-						cerrarIncidentes(sucursal);
+						//cerrarIncidentes(sucursal);
 					}
 				} catch (Exception e) {
-					enviarNotificaciones(sucursal);
+					//enviarNotificaciones(sucursal);
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
@@ -264,7 +264,9 @@ public class ClienteVentasAlInstante implements Job {
 				TipoincidenteHome tipoInHome = new TipoincidenteHome();
 				//obtiene el tipo de incidente
 				Tipoincidente tipoIncidente = tipoInHome.obtenerTipoIncidente(incidente);
+				
 				System.out.println("--Tipo Incidente: " + tipoIncidente.getNombreincidente());
+				
 				Incidente nuevoIncidente = new Incidente();
 				nuevoIncidente.setTipoincidente( tipoIncidente);
 				nuevoIncidente.setCliente(sucursal.getDescripcion());

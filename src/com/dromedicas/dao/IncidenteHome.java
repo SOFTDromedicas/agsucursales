@@ -158,27 +158,23 @@ public class IncidenteHome extends BaseHibernateDAO{
 	 */
 	public void guardarIncidente(Incidente instance){
 		Session session = null;
-		Transaction txt = null;		
+		Transaction txt = null;
 		try {
-			System.out.println("Instancia recibida a persistir: " + instance.getCliente());
-			System.out.println("Incieente Recibido a persistir: " + instance.getTipoincidente().getNombreincidente());
-			
 			session = this.getSession();
-			txt = session.beginTransaction();	
-			System.out.println("----Incidente: " + instance.toString());
-			//this.persist(instance);	
-			this.getSessionFactory().save(instance);
-			txt.commit();		
-			
+			txt = session.beginTransaction();
+			this.persist(instance);			
+			txt.commit();
 		} catch (HibernateException e) {
 			txt.rollback();
-			this.sessionFactory.flush();
-			//this.sessionFactory.flush();
-			e.printStackTrace();;
-		} finally {
+			throw e;
+		}
+		finally{
 			//session.close();
-		}		
+		}
+		// si nada fallo, regresamos verdadero
 	}
+		
+	
 	
 	
 	public void actualizarIncidente(Incidente instance){
