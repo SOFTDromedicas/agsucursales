@@ -163,11 +163,12 @@ public class IncidenteHome extends BaseHibernateDAO{
 		try {
 			session = this.getSession();
 			txt = session.beginTransaction();			
-			this.persist(instance);
+			//this.persist(instance);
+			this.sessionFactory.save(instance);
 			txt.commit();
 		} catch (HibernateException e) {
 			txt.rollback();
-			throw e;
+			e.printStackTrace();;
 		} finally {
 			//session.close();
 		}		
