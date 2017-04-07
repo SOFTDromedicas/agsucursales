@@ -49,7 +49,7 @@ public class EnviarMailAlertas {
 			props.setProperty("mail.smtp.port", "25");// puerto de salida, de
 			// entrada 110
 			props.setProperty("mail.smtp.user",
-								"pruebassistemas@dromedicas.com.co");
+								"notificaciones@dromedicas.com.co");
 			props.setProperty("mail.smtp.auth", "true");
 			props.put("mail.transport.protocol.", "smtp");
 
@@ -78,7 +78,7 @@ public class EnviarMailAlertas {
 			// se compone el mensaje (Asunto, cuerpo del mensaje y direccion origen)
 			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(
-					"pruebassistemas@dromedicas.com.co"));
+					"notificaciones@dromedicas.com.co"));
 			message.setRecipients(Message.RecipientType.BCC, addressTo);
 			message.setSubject("FALLA ACTUALIZACION VENTAS AL INSTANTE " + sucursal);
 			message.setContent(doc.html(), "text/html; charset=utf-8");
