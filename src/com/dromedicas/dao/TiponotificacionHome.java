@@ -5,10 +5,15 @@ import java.util.List;
 import javax.naming.InitialContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 
+import com.dromedicas.dto.Tipoincidente;
 import com.dromedicas.dto.Tiponotificacion;
 
 /**
@@ -16,25 +21,26 @@ import com.dromedicas.dto.Tiponotificacion;
  * @see com.dromedicas.dto.Tiponotificacion
  * @author Hibernate Tools
  */
-public class TiponotificacionHome {
+public class TiponotificacionHome extends BaseHibernateDAO{
 
 	private static final Log log = LogFactory.getLog(TiponotificacionHome.class);
 
-	private final SessionFactory sessionFactory = getSessionFactory();
+	private final Session sessionFactory = super.getSession();
 
-	protected SessionFactory getSessionFactory() {
+	protected Session getSessionFactory() {
 		try {
-			return (SessionFactory) new InitialContext().lookup("SessionFactory");
+			return this.sessionFactory;
 		} catch (Exception e) {
 			log.error("Could not locate SessionFactory in JNDI", e);
-			throw new IllegalStateException("Could not locate SessionFactory in JNDI");
+			throw new IllegalStateException(
+					"Could not locate SessionFactory in JNDI");
 		}
 	}
 
 	public void persist(Tiponotificacion transientInstance) {
 		log.debug("persisting Tiponotificacion instance");
 		try {
-			sessionFactory.getCurrentSession().persist(transientInstance);
+			getSessionFactory().persist(transientInstance);
 			log.debug("persist successful");
 		} catch (RuntimeException re) {
 			log.error("persist failed", re);
@@ -45,7 +51,7 @@ public class TiponotificacionHome {
 	public void attachDirty(Tiponotificacion instance) {
 		log.debug("attaching dirty Tiponotificacion instance");
 		try {
-			sessionFactory.getCurrentSession().saveOrUpdate(instance);
+			getSessionFactory().saveOrUpdate(instance);
 			log.debug("attach successful");
 		} catch (RuntimeException re) {
 			log.error("attach failed", re);
@@ -56,7 +62,7 @@ public class TiponotificacionHome {
 	public void attachClean(Tiponotificacion instance) {
 		log.debug("attaching clean Tiponotificacion instance");
 		try {
-			sessionFactory.getCurrentSession().lock(instance, LockMode.NONE);
+			getSessionFactory().lock(instance, LockMode.NONE);
 			log.debug("attach successful");
 		} catch (RuntimeException re) {
 			log.error("attach failed", re);
@@ -67,7 +73,7 @@ public class TiponotificacionHome {
 	public void delete(Tiponotificacion persistentInstance) {
 		log.debug("deleting Tiponotificacion instance");
 		try {
-			sessionFactory.getCurrentSession().delete(persistentInstance);
+			getSessionFactory().delete(persistentInstance);
 			log.debug("delete successful");
 		} catch (RuntimeException re) {
 			log.error("delete failed", re);
@@ -78,7 +84,7 @@ public class TiponotificacionHome {
 	public Tiponotificacion merge(Tiponotificacion detachedInstance) {
 		log.debug("merging Tiponotificacion instance");
 		try {
-			Tiponotificacion result = (Tiponotificacion) sessionFactory.getCurrentSession().merge(detachedInstance);
+			Tiponotificacion result = (Tiponotificacion) getSessionFactory().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -90,7 +96,7 @@ public class TiponotificacionHome {
 	public Tiponotificacion findById(java.lang.Integer id) {
 		log.debug("getting Tiponotificacion instance with id: " + id);
 		try {
-			Tiponotificacion instance = (Tiponotificacion) sessionFactory.getCurrentSession()
+			Tiponotificacion instance = (Tiponotificacion) getSessionFactory()
 					.get("com.dromedicas.dto.Tiponotificacion", id);
 			if (instance == null) {
 				log.debug("get successful, no instance found");
@@ -107,7 +113,7 @@ public class TiponotificacionHome {
 	public List findByExample(Tiponotificacion instance) {
 		log.debug("finding Tiponotificacion instance by example");
 		try {
-			List results = sessionFactory.getCurrentSession().createCriteria("com.dromedicas.dto.Tiponotificacion")
+			List results = getSessionFactory().createCriteria("com.dromedicas.dto.Tiponotificacion")
 					.add(Example.create(instance)).list();
 			log.debug("find by example successful, result size: " + results.size());
 			return results;
@@ -115,5 +121,26 @@ public class TiponotificacionHome {
 			log.error("find by example failed", re);
 			throw re;
 		}
+	}
+	
+	
+	public Tiponotificacion obtenerTipoNotificacion(String tipoNoti){		
+		Session session = null;
+		Transaction txt = null;
+		Tiponotificacion tipoIncidenteDTO = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();			
+			String queryString = "from Tiponotificacion t where t.descripcion = '" + tipoNoti + "'";
+			Query queryObject = this.sessionFactory.createQuery(queryString);
+			tipoIncidenteDTO = (Tiponotificacion) queryObject.uniqueResult();
+			txt.commit();
+		} catch (HibernateException e) {
+			txt.rollback();
+			throw e;
+		} finally {
+			//session.close();
+		}
+		return tipoIncidenteDTO;
 	}
 }

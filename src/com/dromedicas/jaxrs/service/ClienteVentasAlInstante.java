@@ -79,7 +79,7 @@ public class ClienteVentasAlInstante implements Job {
 						}
 					}
 					//aca se debe validar si hay incidentes abiertos para el cliente actual y cerrarlos
-					
+					cerrarIncidentes(sucursal);
 				} catch (Exception e) {
 					//Manejo de error en la consulta del ws
 					enviarNotificaciones(sucursal);
@@ -116,6 +116,7 @@ public class ClienteVentasAlInstante implements Job {
 							}
 						}
 						//aca se debe validar si hay incidentes abiertos para el cliente actual y cerrarlos
+						cerrarIncidentes(sucursal);
 					}
 				} catch (Exception e) {
 					enviarNotificaciones(sucursal);
@@ -255,7 +256,7 @@ public class ClienteVentasAlInstante implements Job {
 			//busca si el incidente esta creado
 			NotificacionService notificacion = new NotificacionService();
 			inci = notificacion.existeIncidente(instance.getDescripcion(), incidente );
-			System.out.println("-----------Incidente es null:" + inci == null);
+			System.out.println("-----------Incidente es null:" + (inci == null));
 			if( inci !=  null){				
 				notificacion.enviarNotificacion(inci, instance);				
 			}else{
@@ -277,6 +278,25 @@ public class ClienteVentasAlInstante implements Job {
 			log.error("Error al obtener la ultima actualizacion" + e.getMessage());
 		}
 
+	}
+	
+	
+	public void cerrarIncidentes(Sucursales sucursal){
+		log.info("Ingrese a Cerrar Incidentes");
+		String incidenteNombre = "Falla Ventas Al Instante";
+		Incidente incidenteAbierto = null;
+		try {
+			//busca si el incidente esta creado
+			NotificacionService notificacionService = new NotificacionService();
+			incidenteAbierto = notificacionService.existeIncidente(sucursal.getDescripcion(), incidenteNombre );
+			if(incidenteAbierto != null ){
+				//si hay un incidente abierto es cerrado
+				incidenteAbierto.setCierre(new Date());
+				notificacionService.cerrarIncidente(incidenteAbierto);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	
 	

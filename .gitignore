@@ -1,8 +1,7 @@
 # Eclipse
 .classpath
 .project
-.settings/
-
+.settings/*
 # Intellij
 .idea/
 *.iml
@@ -47,7 +46,6 @@ tmp/
 *.swp
 *~.nib
 local.properties
-.settings/
 .loadpath
 .recommenders
 

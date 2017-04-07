@@ -140,7 +140,6 @@ public class IncidenteHome extends BaseHibernateDAO{
 			String queryString = "from Incidente i where i.tipoincidente.nombreincidente = '"+ incidente
 			+"' and i.cliente = '"+ cliente +"' and i.cierre is null ";
 			Query queryObject = this.sessionFactory.createQuery(queryString);
-			System.out.println("*************** Query String"+queryObject.getQueryString());
 			incidenteDTO = (Incidente) queryObject.uniqueResult();
 			txt.commit();
 		} catch (HibernateException e) {
@@ -165,6 +164,24 @@ public class IncidenteHome extends BaseHibernateDAO{
 			session = this.getSession();
 			txt = session.beginTransaction();			
 			this.persist(instance);
+			txt.commit();
+		} catch (HibernateException e) {
+			txt.rollback();
+			throw e;
+		} finally {
+			//session.close();
+		}		
+	}
+	
+	
+	public void actualizarIncidente(Incidente instance){
+		Session session = null;
+		Transaction txt = null;
+		Incidente incidenteDTO = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();			
+			this.merge(instance);
 			txt.commit();
 		} catch (HibernateException e) {
 			txt.rollback();

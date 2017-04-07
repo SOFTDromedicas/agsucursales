@@ -150,10 +150,27 @@ public class NotificacionHome extends BaseHibernateDAO{
 		finally {
 			//session.close();
 		}
-		return notiDTO;	
-		
+		return notiDTO;			
 	}
 	
+	
+	public void guardarNotificacion(Notificacion instance){
+		Session session = null;
+		Transaction txt = null;
+		try {
+			session = this.getSession();
+			txt = session.beginTransaction();
+			this.persist(instance);
+			txt.commit();
+			
+		} catch (Exception e) {
+			txt.rollback();
+			e.printStackTrace();
+		}
+		finally {
+			//session.close();
+		}
+	}
 	
 	
 	public Notificacion obtenerUltimaNotiEmail(Incidente incidente){

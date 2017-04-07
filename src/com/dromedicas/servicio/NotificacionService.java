@@ -7,9 +7,11 @@ import java.util.List;
 
 import com.dromedicas.dao.IncidenteHome;
 import com.dromedicas.dao.NotificacionHome;
+import com.dromedicas.dao.TiponotificacionHome;
 import com.dromedicas.dto.Incidente;
 import com.dromedicas.dto.Notificacion;
 import com.dromedicas.dto.Sucursales;
+import com.dromedicas.dto.Tiponotificacion;
 
 public class NotificacionService {
 	
@@ -22,6 +24,13 @@ public class NotificacionService {
 	public void registrarIncidente(Incidente instance){
 		IncidenteHome incidenteHome = new IncidenteHome();
 		incidenteHome.guardarIncidente(instance);		
+	}
+	
+	
+	public void cerrarIncidente(Incidente instance){
+		IncidenteHome incidenteHome = new IncidenteHome();
+		incidenteHome.actualizarIncidente(instance);
+		
 	}
 	
 	
@@ -40,6 +49,7 @@ public class NotificacionService {
 		Date ahora = new Date();
 		try {
 			int intervalo = obetenerDiferenciaTiempos("minutos", registro, ahora);
+			System.out.println("Intervalo en minutos: "+ intervalo + " Incidente intervalo: " + (incidente.getTipoincidente().getHorasintervalo()*100));
 			if( intervalo >= (incidente.getTipoincidente().getHorasintervalo()*100)){
 				//hay notificaciones enviadas
 				NotificacionHome notiHome = new NotificacionHome();
@@ -57,6 +67,14 @@ public class NotificacionService {
 						if(diferencia >= interEmail){
 							//envia nuevo email
 							this.enviarEmail(sucursal, incidente.getOcurrencia());
+							//se graba el envio de notificacion
+							TiponotificacionHome tipoNHome = new TiponotificacionHome();
+							Tiponotificacion tipo = tipoNHome.obtenerTipoNotificacion("Envio Email");
+							Notificacion notiEmail = new Notificacion();							
+							notiEmail.setTiponotificacion(tipo);
+							notiEmail.setIncidente(incidente);
+							notiEmail.setMomento(ahora);
+							notiHome.guardarNotificacion(notiEmail);							
 						}
 					}
 					
@@ -71,6 +89,15 @@ public class NotificacionService {
 							//envia nuevo sms
 							this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
 												incidente.getTipoincidente().getNombreincidente());
+							//se graba el envio de notificacion
+							TiponotificacionHome tipoNHome = new TiponotificacionHome();
+							Tiponotificacion tipo = tipoNHome.obtenerTipoNotificacion("Envio SMS");
+							Notificacion notiEmail = new Notificacion();							
+							notiEmail.setTiponotificacion(tipo);
+							notiEmail.setIncidente(incidente);
+							notiEmail.setMomento(ahora);
+							notiHome.guardarNotificacion(notiEmail);
+							
 						}
 					}
 				}else{
