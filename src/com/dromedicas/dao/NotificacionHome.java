@@ -210,6 +210,7 @@ public class NotificacionHome extends BaseHibernateDAO{
 							" and n.tiponotificacion.descripcion = 'Envio SMS')";		
 			
 			Query queryObject = this.sessionFactory.createQuery(queryString);
+			System.out.println(queryObject.getQueryString());
 			notiDTO = (Notificacion) queryObject.uniqueResult();
 			txt.commit();
 			

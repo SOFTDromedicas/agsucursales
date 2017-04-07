@@ -74,6 +74,7 @@ public class NotificacionService {
 							//se graba el envio de notificacion
 							TiponotificacionHome tipoNHome = new TiponotificacionHome();
 							Tiponotificacion tipo = tipoNHome.obtenerTipoNotificacion("Envio Email");
+							System.out.println("Tipo Notificacion Email: " + tipo.getDescripcion());
 							Notificacion notiEmail = new Notificacion();							
 							notiEmail.setTiponotificacion(tipo);
 							notiEmail.setIncidente(incidente);
@@ -96,18 +97,27 @@ public class NotificacionService {
 							this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
 												incidente.getTipoincidente().getNombreincidente());
 							//se graba el envio de notificacion
-							TiponotificacionHome tipoNHome = new TiponotificacionHome();
-							Tiponotificacion tipo = tipoNHome.obtenerTipoNotificacion("Envio SMS");
-							Notificacion notiEmail = new Notificacion();							
-							notiEmail.setTiponotificacion(tipo);
-							notiEmail.setIncidente(incidente);
-							notiEmail.setMomento(ahora);
-							notiHome.guardarNotificacion(notiEmail);
+							TiponotificacionHome tipoNHomeSMS = new TiponotificacionHome();
+							Tiponotificacion tipo = tipoNHomeSMS.obtenerTipoNotificacion("Envio SMS");
+							System.out.println("Tipo Notificacion SMS: " + tipo.getDescripcion());
+							Notificacion notiSMS = new Notificacion();							
+							notiSMS.setTiponotificacion(tipo);
+							notiSMS.setIncidente(incidente);
+							notiSMS.setMomento(ahora);
+							notiHome.guardarNotificacion(notiSMS);
 							
 						}
 					}else{
 						this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
 								incidente.getTipoincidente().getNombreincidente());
+						TiponotificacionHome tipoNHomeSMS = new TiponotificacionHome();
+						Tiponotificacion tipo = tipoNHomeSMS.obtenerTipoNotificacion("Envio SMS");
+						System.out.println("Tipo Notificacion SMS : " + tipo.getDescripcion());
+						Notificacion notiSMS = new Notificacion();							
+						notiSMS.setTiponotificacion(tipo);
+						notiSMS.setIncidente(incidente);
+						notiSMS.setMomento(ahora);
+						notiHome.guardarNotificacion(notiSMS);
 					}
 				}else{
 					
@@ -169,10 +179,10 @@ public class NotificacionService {
 	 * @param instance
 	 */
 	private void enviarSMS(String sucursal, Date ultimaActualizacion, String tipoIncidente) {
-		String nrosCel[] = {"3102097474", "3002692042"};
+		String nrosCel[] = {"3102097474"};
 		
 		String mensaje = "Informacion Importante desde  DROPOS. La sucursal " + sucursal + 
-				" no actualiza "+ tipoIncidente +" desde  " + ultimaActualizacion ;
+				" no actualiza. "+ tipoIncidente +". Desde  " + ultimaActualizacion ;
 		for (String nro : nrosCel){
 			
 			EnviarSms.enviarSms(mensaje , nro);
