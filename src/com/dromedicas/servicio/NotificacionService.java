@@ -55,16 +55,19 @@ public class NotificacionService {
 				//hay notificaciones enviadas
 				NotificacionHome notiHome = new NotificacionHome();
 				List<Notificacion> notificacionList = notiHome.obtenerNotificacionPorIncidente(incidente);
+				
+				System.out.println("Hay Notificaciones anteriores: " + (notificacionList.size()) );
 				if( !notificacionList.isEmpty() ){
 					
 					Notificacion email = notiHome.obtenerUltimaNotiEmail(incidente);
-					
+					System.out.println("Hay Notificaciones Email: " + (email != null) );					
 					//obtener la ultima notificacion Email
 					if(email != null){
 						double interEmail = (email.getTiponotificacion().getIntervalo()*100);
 						//determino si el tiempo transcurrido desde su envio al 
 						//momento actual es >= al intervalo en tiponotificacion
 						int diferencia = obetenerDiferenciaTiempos("minutos", email.getMomento(), ahora);
+						System.out.println("Diferencia: " + diferencia + " Intervalo Email: " + interEmail);
 						if(diferencia >= interEmail){
 							//envia nuevo email
 							this.enviarEmail(sucursal, incidente.getOcurrencia());
@@ -80,12 +83,14 @@ public class NotificacionService {
 					}
 					
 					Notificacion sms = notiHome.obtenerUltimaNotiSMS(incidente);
+					System.out.println("Hay Notificaciones SMS: " + (sms != null) );
 					//obtener la ultima notificacion por SMS
 					if(sms != null){
 						double interSms = (sms.getTiponotificacion().getIntervalo()*100);
 						//determino si el tiempo transcurrido desde su envio al 
 						//momento actual es >= al intervalo en tiponotificacion
 						int diferencia = obetenerDiferenciaTiempos("minutos", sms.getMomento(), ahora);
+						System.out.println("Diferencia: " + diferencia + " Intervalo Email: " + interSms);
 						if(diferencia >= interSms){
 							//envia nuevo sms
 							this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
@@ -100,11 +105,22 @@ public class NotificacionService {
 							notiHome.guardarNotificacion(notiEmail);
 							
 						}
+					}else{
+						this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
+								incidente.getTipoincidente().getNombreincidente());
 					}
 				}else{
 					
 					//envia la notificacion con base en el timpo en el valor de intervalo
 					this.enviarEmail(sucursal, incidente.getOcurrencia());
+					TiponotificacionHome tipoNHome = new TiponotificacionHome();
+					Tiponotificacion tipo = tipoNHome.obtenerTipoNotificacion("Envio Email");
+					Notificacion notiEmail = new Notificacion();							
+					notiEmail.setTiponotificacion(tipo);
+					notiEmail.setIncidente(incidente);
+					notiEmail.setMomento(ahora);
+					notiHome.guardarNotificacion(notiEmail);
+					
 				}
 			}
 			

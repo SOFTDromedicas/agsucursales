@@ -79,7 +79,7 @@ public class ClienteVentasAlInstante implements Job {
 						}
 					}
 					//aca se debe validar si hay incidentes abiertos para el cliente actual y cerrarlos
-					//cerrarIncidentes(sucursal);
+					cerrarIncidentes(sucursal);
 				} catch (Exception e) {
 					//Manejo de error en la consulta del ws
 					enviarNotificaciones(sucursal);
@@ -116,7 +116,7 @@ public class ClienteVentasAlInstante implements Job {
 							}
 						}
 						//aca se debe validar si hay incidentes abiertos para el cliente actual y cerrarlos
-						//cerrarIncidentes(sucursal);
+						cerrarIncidentes(sucursal);
 					}
 				} catch (Exception e) {
 					//enviarNotificaciones(sucursal);
