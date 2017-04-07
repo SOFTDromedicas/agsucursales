@@ -22,6 +22,7 @@ public class NotificacionService {
 	
 	
 	public void registrarIncidente(Incidente instance){
+		System.out.println("Metodo de Servicio para guardar incidente");
 		IncidenteHome incidenteHome = new IncidenteHome();
 		incidenteHome.guardarIncidente(instance);		
 	}

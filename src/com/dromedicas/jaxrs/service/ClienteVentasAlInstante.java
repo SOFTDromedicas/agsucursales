@@ -247,7 +247,7 @@ public class ClienteVentasAlInstante implements Job {
 	 * las ventas por periodos mayor a una hora
 	 * @param instance
 	 */
-	private void enviarNotificaciones(Sucursales instance) {
+	private void enviarNotificaciones(Sucursales sucursal) {
 		// busca la ultima actualizacion de la sucursal
 		log.info("Ingrese a enviar Notificaciones");
 		String incidente = "Falla Ventas Al Instante";
@@ -255,19 +255,19 @@ public class ClienteVentasAlInstante implements Job {
 		try{
 			//busca si el incidente esta creado
 			NotificacionService notificacion = new NotificacionService();
-			inci = notificacion.existeIncidente(instance.getDescripcion(), incidente );
-			System.out.println("-----------Incidente es null:" + (inci == null));
+			inci = notificacion.existeIncidente(sucursal.getDescripcion(), incidente );
+			System.out.println(">>>Se Hallo incidente Registrado para el cliente actual: " + (inci != null));
 			if( inci !=  null){				
-				notificacion.enviarNotificacion(inci, instance);				
+				notificacion.enviarNotificacion(inci, sucursal);				
 			}else{
 				//crea un nuevo incidente
 				TipoincidenteHome tipoInHome = new TipoincidenteHome();
 				//obtiene el tipo de incidente
 				Tipoincidente tipoIncidente = tipoInHome.obtenerTipoIncidente(incidente);
-				
+				System.out.println("--Tipo Incidente: " + tipoIncidente.getNombreincidente());
 				Incidente nuevoIncidente = new Incidente();
 				nuevoIncidente.setTipoincidente( tipoIncidente);
-				nuevoIncidente.setCliente(instance.getDescripcion());
+				nuevoIncidente.setCliente(sucursal.getDescripcion());
 				nuevoIncidente.setOcurrencia(new Date());
 				//registra el nuevo incidente
 				notificacion.registrarIncidente(nuevoIncidente);				

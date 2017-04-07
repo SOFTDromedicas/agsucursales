@@ -81,4 +81,12 @@ public class Incidente implements java.io.Serializable {
 		this.notificacions = notificacions;
 	}
 
+	@Override
+	public String toString() {
+		return "Incidente [idincidente=" + idincidente + ", tipoincidente=" + tipoincidente + ", cliente=" + cliente
+				+ ", ocurrencia=" + ocurrencia + ", cierre=" + cierre + ", notificacions=" + notificacions + "]";
+	}
+	
+	
+
 }
