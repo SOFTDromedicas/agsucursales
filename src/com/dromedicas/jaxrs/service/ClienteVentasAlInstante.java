@@ -46,8 +46,7 @@ public class ClienteVentasAlInstante implements Job {
 		VentadiariaglobalHome ventaDiaraHome = new VentadiariaglobalHome();
 		log.info("Obteniendo Sucursales");
 		List<Sucursales> sucursalList = sucursalesHome.findAll();
-		System.out.println("Total Sucursales: " + sucursalList.size());
-		
+		System.out.println("Total de Sucursales: " + sucursalList.size());		
 
 		// Itera Todas las sucursales
 		for (Sucursales sucursal : sucursalList) {
@@ -90,6 +89,7 @@ public class ClienteVentasAlInstante implements Job {
 			} else {
 				// revisa si la hora actual esta entre la hora de apertura y cierre +1
 				try {
+					System.out.println("Sucursal: "+ sucursal.getDescripcion() + " -Abierta: " + estaAbierta(sucursal));
 					if ( estaAbierta(sucursal) ) {
 						
 						System.out.println("Consume servicio para la Sucursal: " + sucursal.getDescripcion());
@@ -205,7 +205,11 @@ public class ClienteVentasAlInstante implements Job {
 		// validacion del dia de la semana
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(diaOperativo);
+				
 		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+		
+		System.out.println("---Dia de la semana: " + diaSemana);
+		
 		if (diaSemana >= 2 && diaSemana <= 7) {
 
 			if (horaActual.get(Calendar.HOUR_OF_DAY) > aperturaN.get(Calendar.HOUR_OF_DAY)
@@ -215,11 +219,11 @@ public class ClienteVentasAlInstante implements Job {
 
 			if (horaActual.get(Calendar.HOUR_OF_DAY) == aperturaN.get(Calendar.HOUR_OF_DAY)) {
 				if (horaActual.get(Calendar.MINUTE) >= aperturaN.get(Calendar.MINUTE))
-					abierto = true;
+					abierto = true;				
 			}
 
 			if (horaActual.get(Calendar.HOUR_OF_DAY) == (cierreN.get(Calendar.HOUR_OF_DAY) + 1)) {
-				if (horaActual.get(Calendar.MINUTE) >= cierreN.get(Calendar.MINUTE))
+				if (horaActual.get(Calendar.MINUTE) < cierreN.get(Calendar.MINUTE))
 					abierto = true;
 			}
 		} else {// Domingos

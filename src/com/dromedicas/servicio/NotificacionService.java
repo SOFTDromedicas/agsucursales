@@ -91,7 +91,7 @@ public class NotificacionService {
 						//determino si el tiempo transcurrido desde su envio al 
 						//momento actual es >= al intervalo en tiponotificacion
 						int diferencia = obetenerDiferenciaTiempos("minutos", sms.getMomento(), ahora);
-						System.out.println("Diferencia: " + diferencia + " Intervalo Email: " + interSms);
+						System.out.println("Diferencia: " + diferencia + " Intervalo SMS: " + interSms);
 						if(diferencia >= interSms){
 							//envia nuevo sms
 							this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
