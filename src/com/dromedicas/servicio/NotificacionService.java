@@ -49,9 +49,9 @@ public class NotificacionService {
 		Date registro = incidente.getOcurrencia();
 		Date ahora = new Date();
 		try {
-			int intervalo = obetenerDiferenciaTiempos("minutos", registro, ahora);
+			int intervalo = obetenerDiferenciaTiempos("horas", registro, ahora);
 			System.out.println("Intervalo en minutos: "+ intervalo + " Incidente intervalo: " + (incidente.getTipoincidente().getHorasintervalo()*100));
-			if( intervalo >= (incidente.getTipoincidente().getHorasintervalo()*100)){
+			if( intervalo >= incidente.getTipoincidente().getHorasintervalo()){
 				//hay notificaciones enviadas
 				NotificacionHome notiHome = new NotificacionHome();
 				List<Notificacion> notificacionList = notiHome.obtenerNotificacionPorIncidente(incidente);
@@ -63,10 +63,10 @@ public class NotificacionService {
 					System.out.println("Hay Notificaciones Email: " + (email != null) );					
 					//obtener la ultima notificacion Email
 					if(email != null){
-						double interEmail = (email.getTiponotificacion().getIntervalo()*100);
+						double interEmail = email.getTiponotificacion().getIntervalo();
 						//determino si el tiempo transcurrido desde su envio al 
 						//momento actual es >= al intervalo en tiponotificacion
-						int diferencia = obetenerDiferenciaTiempos("minutos", email.getMomento(), ahora);
+						int diferencia = obetenerDiferenciaTiempos("horas", email.getMomento(), ahora);
 						System.out.println("Diferencia: " + diferencia + " Intervalo Email: " + interEmail);
 						if(diferencia >= interEmail){
 							//envia nuevo email
@@ -87,10 +87,10 @@ public class NotificacionService {
 					System.out.println("Hay Notificaciones SMS: " + (sms != null) );
 					//obtener la ultima notificacion por SMS
 					if(sms != null){
-						double interSms = (sms.getTiponotificacion().getIntervalo()*100);
+						double interSms = sms.getTiponotificacion().getIntervalo();
 						//determino si el tiempo transcurrido desde su envio al 
 						//momento actual es >= al intervalo en tiponotificacion
-						int diferencia = obetenerDiferenciaTiempos("minutos", sms.getMomento(), ahora);
+						int diferencia = obetenerDiferenciaTiempos("horas", sms.getMomento(), ahora);
 						System.out.println("Diferencia: " + diferencia + " Intervalo SMS: " + interSms);
 						if(diferencia >= interSms){
 							//envia nuevo sms
