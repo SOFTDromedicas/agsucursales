@@ -48,12 +48,13 @@ public class NotificacionService {
 	public void enviarNotificacion(Incidente incidente, Sucursales sucursal ){		
 		Date registro = incidente.getOcurrencia();
 		Date ahora = new Date();
+		NotificacionHome notiHome = new NotificacionHome();
 		try {
 			int intervalo = obetenerDiferenciaTiempos("horas", registro, ahora);
-			System.out.println("Intervalo en minutos: "+ intervalo + " Incidente intervalo: " + (incidente.getTipoincidente().getHorasintervalo()*100));
+			
+			System.out.println("Intervalo en horas: "+ intervalo + " Incidente intervalo: " + (incidente.getTipoincidente().getHorasintervalo()));
 			if( intervalo >= incidente.getTipoincidente().getHorasintervalo()){
 				//hay notificaciones enviadas
-				NotificacionHome notiHome = new NotificacionHome();
 				List<Notificacion> notificacionList = notiHome.obtenerNotificacionPorIncidente(incidente);
 				
 				System.out.println("Hay Notificaciones anteriores: " + (notificacionList.size()) );
@@ -107,29 +108,36 @@ public class NotificacionService {
 							notiHome.guardarNotificacion(notiSMS);
 							
 						}
-					}else{
-						this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
-								incidente.getTipoincidente().getNombreincidente());
+					}else{						
 						TiponotificacionHome tipoNHomeSMS = new TiponotificacionHome();
 						Tiponotificacion tipo = tipoNHomeSMS.obtenerTipoNotificacion("Envio SMS");
-						System.out.println("Tipo Notificacion SMS : " + tipo.getDescripcion());
-						Notificacion notiSMS = new Notificacion();							
-						notiSMS.setTiponotificacion(tipo);
-						notiSMS.setIncidente(incidente);
-						notiSMS.setMomento(ahora);
-						notiHome.guardarNotificacion(notiSMS);
+						int tiempoDif = obetenerDiferenciaTiempos("horas", incidente.getOcurrencia(), ahora);
+						if(tipo.getIntervalo() >= tiempoDif){
+							this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
+									incidente.getTipoincidente().getNombreincidente());
+							
+							System.out.println("Tipo Notificacion SMS : " + tipo.getDescripcion());
+							Notificacion notiSMS = new Notificacion();							
+							notiSMS.setTiponotificacion(tipo);
+							notiSMS.setIncidente(incidente);
+							notiSMS.setMomento(ahora);
+							notiHome.guardarNotificacion(notiSMS);
+						}						
 					}
 				}else{
-					
-					//envia la notificacion con base en el timpo en el valor de intervalo
-					this.enviarEmail(sucursal, incidente.getOcurrencia());
 					TiponotificacionHome tipoNHome = new TiponotificacionHome();
 					Tiponotificacion tipo = tipoNHome.obtenerTipoNotificacion("Envio Email");
-					Notificacion notiEmail = new Notificacion();							
-					notiEmail.setTiponotificacion(tipo);
-					notiEmail.setIncidente(incidente);
-					notiEmail.setMomento(ahora);
-					notiHome.guardarNotificacion(notiEmail);
+					int tiempoDif = obetenerDiferenciaTiempos("horas", incidente.getOcurrencia(), ahora);
+					if(tipo.getIntervalo() >= tiempoDif){
+						//envia la notificacion con base en el timpo en el valor de intervalo
+						this.enviarEmail(sucursal, incidente.getOcurrencia());					
+						Notificacion notiEmail = new Notificacion();							
+						notiEmail.setTiponotificacion(tipo);
+						notiEmail.setIncidente(incidente);
+						notiEmail.setMomento(ahora);
+						notiHome.guardarNotificacion(notiEmail);
+					}
+					
 					
 				}
 			}
@@ -147,7 +155,7 @@ public class NotificacionService {
 		case ("minutos"):
 			Calendar horaInim = Calendar.getInstance();
 			horaInim.setTime(tiempoIni);
-
+			
 			Calendar horaActm = Calendar.getInstance();
 			horaActm.setTime(tiempoFin);
 
@@ -160,7 +168,9 @@ public class NotificacionService {
 			Calendar horaAct = Calendar.getInstance();
 			horaAct.setTime(tiempoFin);
 
-			intervalo = horaAct.get(Calendar.HOUR) - horaIni.get(Calendar.HOUR);
+			intervalo = horaAct.get(Calendar.HOUR_OF_DAY) - horaIni.get(Calendar.HOUR_OF_DAY);
+			System.out.println("Hora Actual: " + horaAct.get(Calendar.HOUR_OF_DAY)+ " Hora Incidente: " + horaIni.get(Calendar.HOUR_OF_DAY));
+			System.out.println("Diferencias: " + (horaAct.get(Calendar.HOUR_OF_DAY) - horaIni.get(Calendar.HOUR_OF_DAY)) );
 			break;
 		}
 		return intervalo;
