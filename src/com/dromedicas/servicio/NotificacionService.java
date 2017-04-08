@@ -52,7 +52,8 @@ public class NotificacionService {
 		try {
 			int intervalo = obetenerDiferenciaTiempos("horas", registro, ahora);
 			
-			System.out.println("Intervalo en horas: "+ intervalo + " Incidente intervalo: " + (incidente.getTipoincidente().getHorasintervalo()));
+			System.out.println("Intervalo en horas: "+ intervalo + " Incidente intervalo: " + 
+									(incidente.getTipoincidente().getHorasintervalo()));
 			if( intervalo >= incidente.getTipoincidente().getHorasintervalo()){
 				//hay notificaciones enviadas
 				List<Notificacion> notificacionList = notiHome.obtenerNotificacionPorIncidente(incidente);

@@ -119,7 +119,7 @@ public class ClienteVentasAlInstante implements Job {
 						cerrarIncidentes(sucursal);
 					}
 				} catch (Exception e) {
-					//enviarNotificaciones(sucursal);
+					enviarNotificaciones(sucursal);
 					System.out.println("Error en la conexion para la sucursal:  " + sucursal.getDescripcion() + " | "
 							+ sucursal.getRutaweb() + servicio);
 					e.printStackTrace();
