@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.dromedicas.dao.IncidenteHome;
 import com.dromedicas.dao.NotificacionHome;
@@ -137,9 +138,7 @@ public class NotificacionService {
 						notiEmail.setIncidente(incidente);
 						notiEmail.setMomento(ahora);
 						notiHome.guardarNotificacion(notiEmail);
-					}
-					
-					
+					}	
 				}
 			}
 			
@@ -151,7 +150,7 @@ public class NotificacionService {
 	
 		
 	public int obetenerDiferenciaTiempos(String tipo, Date tiempoIni, Date tiempoFin) throws ParseException {
-		int intervalo = 0;
+		Integer intervalo = 0;		
 		switch (tipo) {
 		case ("minutos"):
 			Calendar horaInim = Calendar.getInstance();
@@ -162,16 +161,11 @@ public class NotificacionService {
 
 			intervalo = horaActm.get(Calendar.MINUTE) - horaInim.get(Calendar.MINUTE);
 			break;
-		case ("horas"):
-			Calendar horaIni = Calendar.getInstance();
-			horaIni.setTime(tiempoIni);
-
-			Calendar horaAct = Calendar.getInstance();
-			horaAct.setTime(tiempoFin);
-
-			intervalo = horaAct.get(Calendar.HOUR_OF_DAY) - horaIni.get(Calendar.HOUR_OF_DAY);
-			System.out.println("Hora Actual: " + horaAct.get(Calendar.HOUR_OF_DAY)+ " Hora Incidente: " + horaIni.get(Calendar.HOUR_OF_DAY));
-			System.out.println("Diferencias: " + (horaAct.get(Calendar.HOUR_OF_DAY) - horaIni.get(Calendar.HOUR_OF_DAY)) );
+		case ("horas"):		
+			long diff = tiempoFin.getTime() - tiempoIni.getTime();
+			
+			intervalo = (int) (diff / (60 * 60 * 1000) % 24);
+			
 			break;
 		}
 		return intervalo;
@@ -179,6 +173,7 @@ public class NotificacionService {
 	
 	
 	public void enviarEmail(Sucursales sucursal, Date ocurrencia){
+		
 		EnviarMailAlertas.enviarEmailAlertaVentas(sucursal, ocurrencia);
 	}
 	
@@ -190,6 +185,7 @@ public class NotificacionService {
 	 * @param instance
 	 */
 	private void enviarSMS(String sucursal, Date ultimaActualizacion, String tipoIncidente) {
+		//estos numeros se deben obtener dinamicamente desde la base de datos
 		String nrosCel[] = {"3102097474"};
 		
 		String mensaje = "Informacion Importante desde  DROPOS. La sucursal " + sucursal + 

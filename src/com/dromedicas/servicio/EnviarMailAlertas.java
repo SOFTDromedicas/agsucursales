@@ -58,7 +58,8 @@ public class EnviarMailAlertas {
 			// Construimos el mensaje
 
 			/**
-			 * Ojo aca reemplazar por consulta
+			 * Ojo aca reemplazar por consulta de la base deatos 
+			 * estan las direcciones en codigo duro.
 			 */
 			// multiples direcciones
 			String[] to = { "lfernandortiz@gmail.com",

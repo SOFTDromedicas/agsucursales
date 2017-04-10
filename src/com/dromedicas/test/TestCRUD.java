@@ -1,5 +1,7 @@
 package com.dromedicas.test;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -20,16 +22,40 @@ public class TestCRUD {
 	
 	public static void main(String[] args) {
 		
-		
-		ExistenciasHome daoSuc = new ExistenciasHome();	
-		 List<Existencias> list = daoSuc.findAll();
-		 
-		 for( int i = 0; i < list.size(); i++){
-			 Existencias e = list.get(i);
-			 System.out.println(e.getId().getBodegaid() +" - "+ e.getCantidad());
-		 }		 
-		
+		String dateStart = "10/04/2017 09:55:58";
+		String dateStop = "10/04/2017 10:03:48";
 
+		//HH converts hour in 24 hours format (0-23), day calculation
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+		Date d1 = null;
+		Date d2 = null;
+
+		try {
+			d1 = format.parse(dateStart);
+			d2 = format.parse(dateStop);
+
+			//in milliseconds
+			long diff = d2.getTime() - d1.getTime();
+
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+
+			System.out.print(diffDays + " days, ");
+			System.out.print(diffHours + " hours, ");
+			System.out.print(diffMinutes + " minutes, ");
+			System.out.print(diffSeconds + " seconds.");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+		
+		
+		
 	}
 
 }

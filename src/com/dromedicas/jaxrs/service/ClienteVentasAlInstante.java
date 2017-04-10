@@ -202,13 +202,12 @@ public class ClienteVentasAlInstante implements Job {
 		Calendar horaActual = Calendar.getInstance();
 		horaActual.setTime(currentDate);
 
-		// validacion del dia de la semana
+		// validacion del dia de la semana actual
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(diaOperativo);
 				
-		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
+		int diaSemana = horaActual.get(Calendar.DAY_OF_WEEK);	
 		
-		System.out.println("---Dia de la semana: " + diaSemana);
 		
 		if (diaSemana >= 2 && diaSemana <= 7) {
 
