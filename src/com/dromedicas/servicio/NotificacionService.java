@@ -186,7 +186,7 @@ public class NotificacionService {
 	 */
 	private void enviarSMS(String sucursal, Date ultimaActualizacion, String tipoIncidente) {
 		//estos numeros se deben obtener dinamicamente desde la base de datos
-		String nrosCel[] = {"3102097474"};
+		String nrosCel[] = {"3102097474", "3002692042"};
 		
 		String mensaje = "Informacion Importante desde  DROPOS. La sucursal " + sucursal + 
 				" no actualiza. "+ tipoIncidente +". Desde  " + ultimaActualizacion ;

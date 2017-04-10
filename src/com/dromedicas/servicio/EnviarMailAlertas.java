@@ -64,8 +64,8 @@ public class EnviarMailAlertas {
 			// multiples direcciones
 			String[] to = { "lfernandortiz@gmail.com",
 							"sistemas2@dromedicas.com.co",
-							/*"sistemas@dromedicas.com.co",
-							"saidrodriguez@gmail.com"*/
+							"sistemas@dromedicas.com.co",
+							"saidrodriguez@gmail.com"
 							};
 		
 			

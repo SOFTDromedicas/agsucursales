@@ -242,7 +242,7 @@ public class ClienteVentasAlInstante implements Job {
 			}
 		} // fin del else ppal
 
-		return true;
+		return abierto;
 	}
 	
 	/**

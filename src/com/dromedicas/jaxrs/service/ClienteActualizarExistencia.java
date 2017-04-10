@@ -151,11 +151,10 @@ public class ClienteActualizarExistencia implements Job {
 		return existenciasList;
 	}
 	
-	
-	
+		
 	
 	/**
-	 * Valida si la sucursal actual se encuentra abierta con base en el horario
+	 * Valida si la sucursal actual se encuentra abierte con base en el horario
 	 * de la misma. Recibe como parametro un objeto <code>Sucursales</code>. Ver
 	 * mas informacion en la clase {@link com.dromedicas.dto.Sucursales}
 	 * 
@@ -184,11 +183,14 @@ public class ClienteActualizarExistencia implements Job {
 		Calendar horaActual = Calendar.getInstance();
 		horaActual.setTime(currentDate);
 
-		// validacion del dia de la semana
+		// validacion del dia de la semana actual
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(diaOperativo);
-		int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
-		if (diaSemana >= 2 && diaSemana <= 7) {//lunes a sabado
+				
+		int diaSemana = horaActual.get(Calendar.DAY_OF_WEEK);	
+		
+		
+		if (diaSemana >= 2 && diaSemana <= 7) {
 
 			if (horaActual.get(Calendar.HOUR_OF_DAY) > aperturaN.get(Calendar.HOUR_OF_DAY)
 					&& horaActual.get(Calendar.HOUR_OF_DAY) < (cierreN.get(Calendar.HOUR_OF_DAY) + 1)) {
@@ -197,11 +199,11 @@ public class ClienteActualizarExistencia implements Job {
 
 			if (horaActual.get(Calendar.HOUR_OF_DAY) == aperturaN.get(Calendar.HOUR_OF_DAY)) {
 				if (horaActual.get(Calendar.MINUTE) >= aperturaN.get(Calendar.MINUTE))
-					abierto = true;
+					abierto = true;				
 			}
 
 			if (horaActual.get(Calendar.HOUR_OF_DAY) == (cierreN.get(Calendar.HOUR_OF_DAY) + 1)) {
-				if (horaActual.get(Calendar.MINUTE) >= cierreN.get(Calendar.MINUTE))
+				if (horaActual.get(Calendar.MINUTE) < cierreN.get(Calendar.MINUTE))
 					abierto = true;
 			}
 		} else {// Domingos
@@ -221,7 +223,7 @@ public class ClienteActualizarExistencia implements Job {
 			}
 		} // fin del else ppal
 
-		return true;
+		return abierto;
 	}
 	
 	
