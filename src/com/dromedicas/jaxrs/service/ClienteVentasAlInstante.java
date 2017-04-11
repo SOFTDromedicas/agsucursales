@@ -221,13 +221,13 @@ public class ClienteVentasAlInstante implements Job {
 					abierto = true;				
 			}
 
-			if (horaActual.get(Calendar.HOUR_OF_DAY) == (cierreN.get(Calendar.HOUR_OF_DAY) + 1)) {
+			if (horaActual.get(Calendar.HOUR_OF_DAY) == cierreN.get(Calendar.HOUR_OF_DAY)) {
 				if (horaActual.get(Calendar.MINUTE) < cierreN.get(Calendar.MINUTE))
 					abierto = true;
 			}
 		} else {// Domingos
 			if (horaActual.get(Calendar.HOUR_OF_DAY) > aperturaEs.get(Calendar.HOUR_OF_DAY)
-					&& horaActual.get(Calendar.HOUR_OF_DAY) < (cierreEs.get(Calendar.HOUR_OF_DAY) + 1)) {
+					&& horaActual.get(Calendar.HOUR_OF_DAY) < cierreEs.get(Calendar.HOUR_OF_DAY) ) {
 				abierto = true;
 			}
 
