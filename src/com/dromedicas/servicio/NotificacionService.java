@@ -114,7 +114,7 @@ public class NotificacionService {
 						TiponotificacionHome tipoNHomeSMS = new TiponotificacionHome();
 						Tiponotificacion tipo = tipoNHomeSMS.obtenerTipoNotificacion("Envio SMS");
 						int tiempoDif = obetenerDiferenciaTiempos("horas", incidente.getOcurrencia(), ahora);
-						if(tipo.getIntervalo() >= tiempoDif){
+						if( tiempoDif >= tipo.getIntervalo() ){
 							this.enviarSMS(sucursal.getDescripcion(), incidente.getOcurrencia(),
 									incidente.getTipoincidente().getNombreincidente());
 							
@@ -130,7 +130,7 @@ public class NotificacionService {
 					TiponotificacionHome tipoNHome = new TiponotificacionHome();
 					Tiponotificacion tipo = tipoNHome.obtenerTipoNotificacion("Envio Email");
 					int tiempoDif = obetenerDiferenciaTiempos("horas", incidente.getOcurrencia(), ahora);
-					if(tipo.getIntervalo() >= tiempoDif){
+					if(tiempoDif >= tipo.getIntervalo()){
 						//envia la notificacion con base en el timpo en el valor de intervalo
 						this.enviarEmail(sucursal, incidente.getOcurrencia());					
 						Notificacion notiEmail = new Notificacion();							
