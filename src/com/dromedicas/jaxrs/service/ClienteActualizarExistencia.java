@@ -16,10 +16,14 @@ import org.quartz.JobExecutionException;
 import com.dromedicas.dao.ExistenciasHome;
 import com.dromedicas.dao.HibernateSessionFactory;
 import com.dromedicas.dao.SucursalesHome;
+import com.dromedicas.dao.TipoincidenteHome;
 import com.dromedicas.dto.Existencias;
 import com.dromedicas.dto.ExistenciasId;
+import com.dromedicas.dto.Incidente;
 import com.dromedicas.dto.Sucursales;
+import com.dromedicas.dto.Tipoincidente;
 import com.dromedicas.dto.Ventadiariaglobal;
+import com.dromedicas.servicio.NotificacionService;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -31,13 +35,20 @@ public class ClienteActualizarExistencia implements Job {
 	private String servicio = "wsjson/exiactualgeneral";
 	Integer bodegaActual;
 		
-
+	/**
+	 * Ejecuta la tarea programada para el trabajo
+	 * Actualizacion de existencias
+	 */
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		//Objeto DAO encargado de operaciones CRUD para la tabla sucursales
 		SucursalesHome sucursalHome = new SucursalesHome();
+		
 		log.info("Obteniendo Sucursales");
+		//Listado de obejetos sucursales
 		List<Sucursales> sucursalList = sucursalHome.findAll();
 		log.info("Total Sucursales Existencias: " + sucursalList.size());
+		
 		ExistenciasHome exisHome = new ExistenciasHome();
 		long tInicio = System.currentTimeMillis();
 		//Recorre las sucursales
@@ -57,8 +68,10 @@ public class ClienteActualizarExistencia implements Job {
 						exisHome.actualizarExistneciaProducto(exisProducto);						
 					}					
 					log.info("Total de productos actualizados: " + existenciaList.size());
+					cerrarIncidentes(sucursal);
 				} catch (Exception e) {
 					// TODO: handle exception
+					enviarNotificaciones(sucursal);
 					e.printStackTrace();
 				}	
 			}else{				
@@ -75,9 +88,10 @@ public class ClienteActualizarExistencia implements Job {
 							exisHome.actualizarExistneciaProducto(exisProducto);						
 						}	
 						log.info("Total de productos actualizados: " + existenciaList.size());
+						cerrarIncidentes(sucursal);
 					}	
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
+				} catch (ParseException e) {					
+					enviarNotificaciones(sucursal);
 					e.printStackTrace();
 				}	
 			}	
@@ -144,7 +158,7 @@ public class ClienteActualizarExistencia implements Job {
 			}else{
 				log.info("No hay informacion de existencias para la sucursal actual");
 			}
-		} catch (Exception e) {
+		} catch (Exception e) {			
 			e.printStackTrace();
 		}
 		//conjunto de registros de existencias del WS
@@ -226,5 +240,68 @@ public class ClienteActualizarExistencia implements Job {
 		return abierto;
 	}
 	
+	
+	/**
+	 * Envia notificaciones SMS y Email si no se esta actualizando
+	 * las ventas por periodos mayor a una hora
+	 * @param instance
+	 */
+	private void enviarNotificaciones(Sucursales sucursal) {
+		// busca la ultima actualizacion de la sucursal
+		log.info("Ingrese a enviar Notificaciones");
+		String incidente = "Falla Existencias Globales";
+		Incidente inci = null;
+		try{
+			//busca si el incidente esta creado
+			NotificacionService notificacion = new NotificacionService();
+			inci = notificacion.existeIncidente(sucursal.getDescripcion(), incidente );
+			System.out.println(">>>Se Hallo incidente Registrado para el cliente actual: " + (inci != null));
+			if( inci !=  null){				
+				notificacion.enviarNotificacion(inci, sucursal);				
+			}else{
+				//crea un nuevo incidente
+				TipoincidenteHome tipoInHome = new TipoincidenteHome();
+				//obtiene el tipo de incidente
+				Tipoincidente tipoIncidente = tipoInHome.obtenerTipoIncidente(incidente);
+				
+				System.out.println("--Tipo Incidente: " + tipoIncidente.getNombreincidente());
+				
+				Incidente nuevoIncidente = new Incidente();
+				nuevoIncidente.setTipoincidente( tipoIncidente);
+				nuevoIncidente.setCliente(sucursal.getDescripcion());
+				nuevoIncidente.setOcurrencia(new Date());
+				//registra el nuevo incidente
+				notificacion.registrarIncidente(nuevoIncidente);				
+			}
+			
+		} catch (Exception e) {
+			log.error("Error al obtener la ultima actualizacion" + e.getMessage());
+		}
+
+	}
+	
+	
+	/**
+	 * Valida la existencias de incidentes abiertos
+	 * y actualiza su fecha de cierre
+	 * @param sucursal
+	 */
+	public void cerrarIncidentes(Sucursales sucursal){
+		log.info("Ingrese a Cerrar Incidentes");
+		String incidenteNombre = "Falla Existencias Globales";
+		Incidente incidenteAbierto = null;
+		try {
+			//busca si el incidente esta creado
+			NotificacionService notificacionService = new NotificacionService();
+			incidenteAbierto = notificacionService.existeIncidente(sucursal.getDescripcion(), incidenteNombre );
+			if(incidenteAbierto != null ){
+				//si hay un incidente abierto es cerrado
+				incidenteAbierto.setCierre(new Date());
+				notificacionService.cerrarIncidente(incidenteAbierto);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 	
 }
