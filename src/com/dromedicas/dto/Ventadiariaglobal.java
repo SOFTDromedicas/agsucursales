@@ -15,6 +15,7 @@ public class Ventadiariaglobal implements java.io.Serializable {
 	private double ventaespe;
 	private String diaoperativo;
 	private Date ultactualizacion;
+	private Double marcapropia;
 
 	public Ventadiariaglobal() {
 	}
@@ -26,14 +27,16 @@ public class Ventadiariaglobal implements java.io.Serializable {
 	}
 
 	public Ventadiariaglobal(String codsucursal, String vendedor, double ventagen, double ventaespe,
-			String diaoperativo, Date ultactualizacion) {
+			String diaoperativo, Date ultactualizacion, Double marcapropia) {
 		this.codsucursal = codsucursal;
 		this.vendedor = vendedor;
 		this.ventagen = ventagen;
 		this.ventaespe = ventaespe;
 		this.diaoperativo = diaoperativo;
 		this.ultactualizacion = ultactualizacion;
+		this.marcapropia = marcapropia;
 	}
+
 
 	public Long getId() {
 		return this.id;
@@ -90,4 +93,15 @@ public class Ventadiariaglobal implements java.io.Serializable {
 	public void setUltactualizacion(Date ultactualizacion) {
 		this.ultactualizacion = ultactualizacion;
 	}
+
+	public Double getMarcapropia() {
+		return this.marcapropia;
+	}
+
+	public void setMarcapropia(Double marcapropia) {
+		this.marcapropia = marcapropia;
+	}
+
+	
+	
 }

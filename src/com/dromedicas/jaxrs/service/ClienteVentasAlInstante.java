@@ -150,15 +150,19 @@ public class ClienteVentasAlInstante implements Job {
 			List<VentaAlInstanteDetalle> detalle = response.getMessage().getData();
 			if (detalle != null) {
 				if (!detalle.isEmpty()) {
+					//itera los resultados del json y crea objeto DTO para 
+					//Ventadiariaglobal
 					for (VentaAlInstanteDetalle e : detalle) {
 						Ventadiariaglobal venta = new Ventadiariaglobal();
 						venta.setCodsucursal(sucursal.getCodigo());
 						venta.setDiaoperativo(e.getDiaoperativo());
 						venta.setVendedor(e.getVendedor());
-						if (e.getVtaespecial() != null)
+						if(e.getVtaespecial() != null)
 							venta.setVentaespe(new Double(e.getVtaespecial().trim()));
 						venta.setVentagen(new Double(e.getVtageneral()));
 						venta.setUltactualizacion(new Date());
+						if(e.getSurezinc() != null)
+							venta.setMarcapropia(new Double(e.getSurezinc().trim()));
 						ventaList.add(venta);
 					}
 				} // fin del if empty

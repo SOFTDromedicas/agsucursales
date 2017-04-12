@@ -26,5 +26,8 @@
         <property name="ultactualizacion" type="timestamp">
             <column name="ultactualizacion" length="0" />
         </property>
+         <property name="marcapropia" type="java.lang.Double">
+            <column name="marcapropia" precision="15" scale="3" />
+        </property>
     </class>
 </hibernate-mapping>

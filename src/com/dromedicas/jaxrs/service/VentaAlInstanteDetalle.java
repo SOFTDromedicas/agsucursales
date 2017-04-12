@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@JsonPropertyOrder({ "diaoperativo", "vendedor", "vtageneral", "vtaespecial" })
+@JsonPropertyOrder({ "diaoperativo", "vendedor", "vtageneral", "vtaespecial", "surezinc" })
 public class VentaAlInstanteDetalle {
 
 	@JsonProperty("diaoperativo")
@@ -21,6 +21,8 @@ public class VentaAlInstanteDetalle {
 	private String vtageneral;
 	@JsonProperty("vtaespecial")
 	private String vtaespecial;
+	@JsonProperty("surezinc")
+	private String surezinc;
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -62,6 +64,16 @@ public class VentaAlInstanteDetalle {
 	@JsonProperty("vtaespecial")
 	public void setVtaespecial(String vtaespecial) {
 		this.vtaespecial = vtaespecial;
+	}
+
+	@JsonProperty("surezinc")
+	public String getSurezinc() {
+		return surezinc;
+	}
+
+	@JsonProperty("surezinc")
+	public void setSurezinc(String surezinc) {
+		this.surezinc = surezinc;
 	}
 
 	@JsonAnyGetter
