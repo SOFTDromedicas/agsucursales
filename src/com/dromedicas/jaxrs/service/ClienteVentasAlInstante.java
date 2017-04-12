@@ -176,6 +176,8 @@ public class ClienteVentasAlInstante implements Job {
 		return ventaList;
 	}
 
+	
+	
 	/**
 	 * Valida si la sucursal actual se encuentra abierte con base en el horario
 	 * de la misma. Recibe como parametro un objeto <code>Sucursales</code>. Ver
