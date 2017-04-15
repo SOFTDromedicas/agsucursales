@@ -61,15 +61,18 @@ public class ClienteActualizarExistencia implements Job {
 					List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
 					log.info("Bodega Actual: " + this.bodegaActual);
 					//ubica la bodega actual y coloca las existencias en cero
-					exisHome.existenciaBodegaoACero(this.bodegaActual);	
-					log.info("Actualizando existencias de productos");
-					for(Existencias exisProducto: existenciaList){
-						//actualiza los productos actuales con los valores recibidos del ws						
-						exisHome.actualizarExistneciaProducto(exisProducto);						
-					}					
-					log.info("Total de productos actualizados: " + existenciaList.size());
-					cerrarIncidentes(sucursal);
+					if( existenciaList != null){
+						exisHome.existenciaBodegaoACero(this.bodegaActual);	
+						log.info("Actualizando existencias de productos");
+						for(Existencias exisProducto: existenciaList){
+							//actualiza los productos actuales con los valores recibidos del ws						
+							exisHome.actualizarExistneciaProducto(exisProducto);						
+						}					
+						log.info("Total de productos actualizados: " + existenciaList.size());
+						cerrarIncidentes(sucursal);
+					}
 				} catch (Exception e) {
+					System.out.println("Entre al catch del metodo ppal");
 					// TODO: handle exception
 					enviarNotificaciones(sucursal);
 					e.printStackTrace();
@@ -79,30 +82,33 @@ public class ClienteActualizarExistencia implements Job {
 					if(estaAbierta(sucursal) ){
 						//Consume el servicio
 						List<Existencias> existenciaList = obtenertWSExistencia(sucursal);
-						log.info("Bodega Actual: " + this.bodegaActual);
-						//ubica la bodega actual y coloca las existencias en cero
-						exisHome.existenciaBodegaoACero(this.bodegaActual);		
-						log.info("Actualizando existencias de productos");
-						for(Existencias exisProducto: existenciaList){
-							//actualiza los productos actuales con los valores recibidos del ws						
-							exisHome.actualizarExistneciaProducto(exisProducto);						
-						}	
-						log.info("Total de productos actualizados: " + existenciaList.size());
-						cerrarIncidentes(sucursal);
+						if( existenciaList !=  null ){
+							log.info("Bodega Actual: " + this.bodegaActual);
+							//ubica la bodega actual y coloca las existencias en cero
+							exisHome.existenciaBodegaoACero(this.bodegaActual);		
+							log.info("Actualizando existencias de productos");
+							for(Existencias exisProducto: existenciaList){
+								//actualiza los productos actuales con los valores recibidos del ws						
+								exisHome.actualizarExistneciaProducto(exisProducto);						
+							}	
+							log.info("Total de productos actualizados: " + existenciaList.size());
+							cerrarIncidentes(sucursal);
+						}
 					}	
-				} catch (ParseException e) {					
+				} catch (ParseException e) {	
+					System.out.println("Entre al catch del metodo ppal");
 					enviarNotificaciones(sucursal);
 					e.printStackTrace();
 				}	
-			}	
+			}//fin del else para 24 Horas
+			
 			long t2 = (System.currentTimeMillis() - t1) / 1000;
             String sec = "";
             if (t2 > 1 || t2 == 0) {
                 sec = " segundos";
             } else {
                 sec = " segundo";
-            }
-            
+            }            
             log.info( "Tiempo de Ejecucion proceso:" + t2 + sec);		
 		}//fin del for que itera sucursales
 		
@@ -128,12 +134,12 @@ public class ClienteActualizarExistencia implements Job {
 		List<Existencias> existenciasList = new ArrayList<Existencias>();
 		//cliente Jersey- consume el WS
 		log.info("Servicio Existencias: " + sucursal.getDescripcion() + " | " + sucursal.getRutaweb() + this.servicio);
-		
-		Client client = Client.create();
-		WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicio);
-		ExistenciaActualWrap response = webResource.accept("application/json").get(ExistenciaActualWrap.class);
-	
+			
 		try {
+			Client client = Client.create();
+			WebResource webResource = client.resource(sucursal.getRutaweb() + this.servicio);
+			ExistenciaActualWrap response = webResource.accept("application/json").get(ExistenciaActualWrap.class);
+			
 			//este list viene del WS "data:[]"
 			List<ExistenciaActualDetalle> detalle = response.getMessage().getData();
 			if (detalle != null) {
@@ -156,9 +162,9 @@ public class ClienteActualizarExistencia implements Job {
 					}
 				} // fin del if empty
 			}else{
-				log.info("No hay informacion de existencias para la sucursal actual");
+				log.info("No hay informacion de Existencias para la sucursal actual");
 			}
-		} catch (Exception e) {			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		//conjunto de registros de existencias del WS

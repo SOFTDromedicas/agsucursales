@@ -172,7 +172,6 @@ public class ClienteVentasAlInstante implements Job {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return ventaList;
 	}
 
