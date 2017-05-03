@@ -263,7 +263,7 @@ public class ClienteActualizarExistencia implements Job {
 			inci = notificacion.existeIncidente(sucursal.getDescripcion(), incidente );
 			System.out.println(">>>Se Hallo incidente Registrado para el cliente actual: " + (inci != null));
 			if( inci !=  null){				
-				notificacion.enviarNotificacion(inci, sucursal);				
+				notificacion.enviarNotificacion(inci, sucursal, "Falla Actualizacion Existencias Globales");				
 			}else{
 				//crea un nuevo incidente
 				TipoincidenteHome tipoInHome = new TipoincidenteHome();

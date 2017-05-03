@@ -58,7 +58,7 @@ public class WebController extends HttpServlet {
 		
 		logger.debug("------------ End Request Dromedicas------------");
 		
-		request.getRequestDispatcher("index.jsp").forward(request, response);		
+		request.getRequestDispatcher("formbasico.jsp").forward(request, response);		
 	}
 
 }

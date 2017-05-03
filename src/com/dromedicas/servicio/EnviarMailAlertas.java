@@ -19,7 +19,7 @@ import com.dromedicas.dto.Sucursales;
 
 public class EnviarMailAlertas {
 	
-	public static void enviarEmailAlertaVentas(Sucursales instance , Date fecha) {
+	public static void enviarEmailAlertaVentas(Sucursales instance, String tipoFalla, Date fecha) {
 		String sucursal = instance.getDescripcion();
 		System.out.println("Clase enviar Email Alerta");
 		try{
@@ -37,6 +37,9 @@ public class EnviarMailAlertas {
 			
 			Element franq = doc.select("span#sucursal2").first();
 			franq.append(sucursal);
+			
+			Element tipoF = doc.select("span#tipofallaid").first();
+			tipoF.append(tipoFalla);
 			
 			Element bank = doc.select("span#ultActualizacion").first();
 			bank.append(sdf.format(fecha));
@@ -100,5 +103,6 @@ public class EnviarMailAlertas {
 		
 		
 	}
+
 
 }

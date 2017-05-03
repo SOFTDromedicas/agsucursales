@@ -266,7 +266,7 @@ public class ClienteVentasAlInstante implements Job {
 			inci = notificacion.existeIncidente(sucursal.getDescripcion(), incidente );
 			System.out.println(">>>Se Hallo incidente Registrado para el cliente actual: " + (inci != null));
 			if( inci !=  null){				
-				notificacion.enviarNotificacion(inci, sucursal);				
+				notificacion.enviarNotificacion(inci, sucursal, "Falla Actualizacion Ventas al Instante");
 			}else{
 				//crea un nuevo incidente
 				TipoincidenteHome tipoInHome = new TipoincidenteHome();
@@ -281,9 +281,7 @@ public class ClienteVentasAlInstante implements Job {
 				nuevoIncidente.setOcurrencia(new Date());
 				//registra el nuevo incidente
 				notificacion.registrarIncidente(nuevoIncidente);				
-			}
-			
-			
+			}			
 		} catch (Exception e) {
 			log.error("Error al obtener la ultima actualizacion" + e.getMessage());
 		}

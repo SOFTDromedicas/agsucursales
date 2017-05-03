@@ -46,7 +46,7 @@ public class NotificacionService {
 	}
 	
 	
-	public void enviarNotificacion(Incidente incidente, Sucursales sucursal ){		
+	public void enviarNotificacion(Incidente incidente, Sucursales sucursal, String tipoFalla ){		
 		Date registro = incidente.getOcurrencia();
 		Date ahora = new Date();
 		NotificacionHome notiHome = new NotificacionHome();
@@ -73,7 +73,7 @@ public class NotificacionService {
 						System.out.println("Diferencia: " + diferencia + " Intervalo Email: " + interEmail);
 						if(diferencia >= interEmail){
 							//envia nuevo email
-							this.enviarEmail(sucursal, incidente.getOcurrencia());
+							this.enviarEmail(sucursal, tipoFalla, incidente.getOcurrencia());
 							//se graba el envio de notificacion
 							TiponotificacionHome tipoNHome = new TiponotificacionHome();
 							Tiponotificacion tipo = tipoNHome.obtenerTipoNotificacion("Envio Email");
@@ -132,7 +132,7 @@ public class NotificacionService {
 					int tiempoDif = obetenerDiferenciaTiempos("horas", incidente.getOcurrencia(), ahora);
 					if(tiempoDif >= tipo.getIntervalo()){
 						//envia la notificacion con base en el timpo en el valor de intervalo
-						this.enviarEmail(sucursal, incidente.getOcurrencia());					
+						this.enviarEmail(sucursal, tipoFalla, incidente.getOcurrencia());					
 						Notificacion notiEmail = new Notificacion();							
 						notiEmail.setTiponotificacion(tipo);
 						notiEmail.setIncidente(incidente);
@@ -172,9 +172,9 @@ public class NotificacionService {
 	}
 	
 	
-	public void enviarEmail(Sucursales sucursal, Date ocurrencia){
+	public void enviarEmail(Sucursales sucursal, String tipoFalla, Date ocurrencial){
 		
-		EnviarMailAlertas.enviarEmailAlertaVentas(sucursal, ocurrencia);
+		EnviarMailAlertas.enviarEmailAlertaVentas(sucursal, tipoFalla, ocurrencial);
 	}
 	
 	
