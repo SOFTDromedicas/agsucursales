@@ -48,7 +48,7 @@ public class EnviarMailAlertas {
 			bank.append(sdf.format(fecha));
 			
 			Element img = doc.select("img#pixelcontrol").first();
-			bank.attr("src", url);
+			img.attr("src", url);
 			
 			// envia el mail
 
