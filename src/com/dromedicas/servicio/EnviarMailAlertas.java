@@ -19,14 +19,17 @@ import com.dromedicas.dto.Sucursales;
 
 public class EnviarMailAlertas {
 	
-	public static void enviarEmailAlertaVentas(Sucursales instance, String tipoFalla, Date fecha) {
+	public static void enviarEmailAlertaVentas(Sucursales instance, String tipoFalla, Date fecha, String token) {
 		String sucursal = instance.getDescripcion();
+		
+		String url = "http:/187.143.221.66:8080/farmapuntos/ValidateMail?openmail=" + token;
+		
 		System.out.println("Clase enviar Email Alerta");
 		try{
 			SimpleDateFormat sdf = new SimpleDateFormat(
 					"dd/MM/yyyy - hh:mm:ss aaa");
 			File inputHtml = new File(
-					"C:/FarmapuntosEmail/dripresponsive.html");
+					"C:/FarmapuntosEmail/emailalerta.html");
 			// Asginamos el archivo al objeto analizador Document
 			Document doc = Jsoup.parse(inputHtml, "UTF-8");
 			// obtengo los id's del DOM a los que deseo insertar los valores
@@ -43,6 +46,9 @@ public class EnviarMailAlertas {
 			
 			Element bank = doc.select("span#ultActualizacion").first();
 			bank.append(sdf.format(fecha));
+			
+			Element img = doc.select("img#pixelcontrol").first();
+			bank.attr("src", url);
 			
 			// envia el mail
 
